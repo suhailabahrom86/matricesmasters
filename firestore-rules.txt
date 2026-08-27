@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Existing EXPLOG / Chapter 4
+    match /explogResults/{document} {
+      allow read: if true;
+      allow create: if true;
+      allow delete: if true;
+      allow update: if false;
+    }
+
+    // MATRICES MASTERS / Chapter 6
+    match /chapter6Results/{document} {
+      allow read: if true;
+      allow create: if true;
+      allow delete: if true;
+      allow update: if false;
+    }
+
+    // Deny all other collections.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
