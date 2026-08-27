@@ -452,6 +452,7 @@
         this.leaderboardData = []; // Processed Best Attempts per student
         this.loginAttempts = 0;
         this.lockoutUntil = null;
+        this.unsubscribeLeaderboard = null; // Prevent duplicate Firestore listeners
       }
 
       init() {
@@ -481,7 +482,6 @@
           badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-teal-light text-teal border border-teal/30";
           badge.querySelector('span').className = "w-2 h-2 rounded-full bg-teal animate-pulse";
           text.textContent = "Cloud Connected";
-          this.subscribeRealtimeLeaderboard();
         } else if (status === 'local') {
           badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 border border-gray-300";
           badge.querySelector('span').className = "w-2 h-2 rounded-full bg-gray-400";
@@ -1338,6 +1338,9 @@
 
       logoutTeacher() {
         this.teacherAuthenticated = false;
+        this.teacherSectionFilter = 'ALL';
+        const modal = document.getElementById('modal-container');
+        if (modal) modal.classList.add('hidden');
         this.navigateTo('landing');
       }
 
@@ -1640,13 +1643,18 @@
 
       subscribeRealtimeLeaderboard() {
         if (!window.FirebaseDB) return;
+
+        // Create only ONE realtime Firestore listener.
+        if (this.unsubscribeLeaderboard) return;
+
         const { onSnapshot } = window.FirestoreOps;
         const colRef = this.getCollectionRef();
         if (!colRef) return;
 
         try {
-          onSnapshot(colRef, (snapshot) => {
+          this.unsubscribeLeaderboard = onSnapshot(colRef, (snapshot) => {
             this.setCloudStatus('connected');
+
             const records = [];
             snapshot.forEach(doc => {
               const data = doc.data() || {};
@@ -1681,10 +1689,12 @@
           }, (error) => {
             console.error("Firestore onSnapshot failed:", error);
             this.setCloudStatus('local');
+            this.unsubscribeLeaderboard = null;
           });
         } catch (err) {
           console.error("Realtime subscription error:", err);
           this.setCloudStatus('local');
+          this.unsubscribeLeaderboard = null;
         }
       }
 
