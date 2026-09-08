@@ -1,1290 +1,1915 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" class="h-full bg-gray-50">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THINK / LAB | Interactive Learning Simulation for Educators</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MATRICES MASTERS • MTCF 0114 Chapter 6</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            teal: {
+              DEFAULT: '#118477',
+              dark: '#0C5E55',
+              light: '#E7F5F3',
+              hover: '#0E6F64'
+            },
+            amber: {
+              DEFAULT: '#F5A10B',
+              dark: '#C88104',
+              light: '#FEF6E7',
+              hover: '#DE9108'
+            },
+            coral: {
+              DEFAULT: '#FF6939',
+              dark: '#D9491B',
+              light: '#FFF0EC',
+              hover: '#E55527'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- KaTeX for High-Fidelity Mathematical Formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="if(window.app) window.app.triggerKaTeX();"></script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; color: #1F2937; }
     
-    <script>
-        tailwind.config = {
-            darkMode: ['class', '[data-theme="dark"]'],
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        display: ['"Space Grotesk"', 'sans-serif'],
-                    },
-                    colors: {
-                        navy: {
-                            50: '#f0f3fa',
-                            100: '#d9e0f3',
-                            700: '#2b335c',
-                            800: '#21274a',
-                            900: '#171a30',
-                        },
-                        violet: {
-                            500: '#8b5cf6',
-                            600: '#753bbd',
-                            700: '#602aa3',
-                        },
-                        peach: {
-                            300: '#ffe1b8',
-                            400: '#ffd19a',
-                            500: '#fca851',
-                        },
-                    }
-                }
-            }
-        }
-    </script>
+    .bg-math-pattern {
+      background-color: #f8fafc;
+      background-image: radial-gradient(#118477 0.75px, transparent 0.75px), radial-gradient(#F5A10B 0.75px, #f8fafc 0.75px);
+      background-size: 32px 32px;
+      background-position: 0 0, 16px 16px;
+    }
 
-    <style>
-        :root {
-            --paper: #f8fafc;
-            --surface: #ffffff;
-            --surface-subtle: #f1f5f9;
-            --ink: #0f172a;
-            --muted: #64748b;
-            --border: #e2e8f0;
-            --accent-violet: #753bbd;
-            --accent-peach: #ffd19a;
-            --navy-header: #1e293b;
-            --card-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
-            --glow-color: rgba(117, 59, 189, 0.15);
-        }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(17, 132, 119, 0.12);
+    }
 
-        [data-theme="dark"] {
-            --paper: #0b0f19;
-            --surface: #131b2e;
-            --surface-subtle: #1c2640;
-            --ink: #f8fafc;
-            --muted: #94a3b8;
-            --border: #26334d;
-            --accent-violet: #a77bf3;
-            --accent-peach: #ffd19a;
-            --navy-header: #070a12;
-            --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
-            --glow-color: rgba(167, 123, 243, 0.25);
-        }
+    /* KaTeX Display Spacing & Vertically Centered Formulas */
+    .katex-display { margin: 0.6em 0 !important; }
+    .katex { font-size: 1.05em; }
 
-        body {
-            background-color: var(--paper);
-            color: var(--ink);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #118477; border-radius: 4px; }
 
-        .font-display { font-family: 'Space Grotesk', sans-serif; }
+    /* ==================================================================
+       BRAND TYPOGRAPHY & VISUAL EFFECTS
+       ================================================================== */
+    .brand-matrices {
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #118477;
+      text-shadow: 0 1px 2px rgba(17, 132, 119, 0.12);
+    }
+    
+    .brand-matrices-hero {
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      text-shadow: 0 2px 10px rgba(17, 132, 119, 0.4), 0 0 20px rgba(255, 255, 255, 0.2);
+    }
 
-        .bg-surface { background-color: var(--surface); }
-        .bg-surface-subtle { background-color: var(--surface-subtle); }
-        .border-theme { border-color: var(--border); }
-        .text-ink { color: var(--ink); }
-        .text-muted { color: var(--muted); }
+    .brand-masters {
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #F5A10B 0%, #FF6939 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 5px rgba(245, 161, 11, 0.35));
+      display: inline-block;
+      transform: skewX(-3deg);
+    }
 
-        /* Scrollbar aesthetics */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+    .brand-masters-hero {
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #FFB733 0%, #F5A10B 40%, #FF6939 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 18px rgba(245, 161, 11, 0.55));
+      display: inline-block;
+      transform: skewX(-3deg);
+    }
 
-        .card-glow {
-            box-shadow: var(--card-shadow);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-        }
-
-        .card-glow:hover {
-            box-shadow: 0 15px 35px -5px var(--glow-color);
-        }
-
-        .choice-btn {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .choice-btn:hover {
-            transform: translateX(4px);
-        }
-
-        .choice-btn.selected {
-            background-color: var(--accent-violet) !important;
-            color: #ffffff !important;
-            border-color: var(--accent-violet) !important;
-            box-shadow: 0 8px 20px -4px var(--glow-color);
-        }
-
-        .choice-btn.selected .letter-box {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes subtlePulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.08); opacity: 0.85; }
-        }
-
-        .pulse-active {
-            animation: subtlePulse 2.2s infinite ease-in-out;
-        }
-
-        /* Print formatting */
-        @media print {
-            body { background: white !important; color: black !important; }
-            header, aside, .no-print, nav { display: none !important; }
-            main { padding: 0 !important; width: 100% !important; max-width: 100% !important; }
-        }
-    </style>
+    .matrix-logo-badge {
+      background: linear-gradient(135deg, #118477 0%, #0C5E55 100%);
+      border: 1px solid rgba(245, 161, 11, 0.4);
+      box-shadow: 0 4px 12px rgba(17, 132, 119, 0.25);
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-violet-500 selection:text-white">
 
-    <header class="h-16 lg:h-20 bg-surface border-b border-theme sticky top-0 z-40 transition-colors duration-300 shadow-sm">
-        <div class="max-w-[1500px] mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-            
-            <!-- Brand Logo & Title -->
-            <div class="flex items-center gap-3">
-                <a href="#" onclick="app.navigate(0); return false;" class="flex items-center gap-2.5 group focus:outline-none">
-                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-navy-800 text-peach-400 flex items-center justify-center font-display font-bold text-lg sm:text-xl shadow-md group-hover:scale-105 transition-transform">
-                        T
-                    </div>
-                    <div>
-                        <div class="font-display font-bold text-lg sm:text-xl tracking-tight text-ink group-hover:text-violet-600 transition-colors leading-none">
-                            THINK<span class="text-violet-600 dark:text-violet-400"> / </span>LAB
-                        </div>
-                        <div class="text-[10px] sm:text-xs font-semibold tracking-wider text-muted uppercase mt-0.5">
-                            MICROLEARNING FOR EDUCATORS
-                        </div>
-                    </div>
-                </a>
+<body class="h-full flex flex-col bg-math-pattern min-h-screen text-gray-800">
+
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      
+      <!-- BRAND LOGO HEADER -->
+      <div class="flex items-center space-x-3 cursor-pointer group" onclick="app.navigateTo('landing')">
+        <div class="w-10 h-10 rounded-xl matrix-logo-badge text-white flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-all">
+          <div class="font-mono text-xs font-bold leading-none tracking-tighter flex items-center gap-0.5 select-none">
+            <span class="text-white text-base font-serif">[</span>
+            <div class="grid grid-cols-2 gap-0.5 text-[9px] text-center font-bold">
+              <span class="text-amber">1</span><span class="text-white/80">0</span>
+              <span class="text-white/80">0</span><span class="text-coral">1</span>
             </div>
-
-            <!-- Header Middle & Right Controls -->
-            <div class="flex items-center gap-2 sm:gap-4">
-                
-                <!-- Time Badge -->
-                <div class="hidden lg:flex items-center gap-1.5 text-xs font-medium text-muted bg-surface-subtle px-3 py-1.5 rounded-full border border-theme">
-                    <i class="fa-regular fa-clock text-violet-500"></i>
-                    <span>5–7 Min Experience</span>
-                </div>
-
-                <!-- Mobile Menu Button -->
-                <button onclick="app.toggleMobileMenu()" class="lg:hidden flex items-center gap-2 px-3 py-1.5 rounded-xl border border-theme bg-surface-subtle text-xs font-bold text-ink hover:bg-violet-600 hover:text-white transition-all">
-                    <i class="fa-solid fa-bars-staggered"></i>
-                    <span id="mobileMenuBtnText">Learning Journey</span>
-                </button>
-
-                <!-- Sound Toggle -->
-                <button id="soundToggleBtn" onclick="app.toggleSound()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-theme bg-surface-subtle text-muted hover:text-ink hover:border-violet-500 flex items-center justify-center transition-all" title="Toggle Sound FX" aria-label="Toggle Sound">
-                    <i id="soundIcon" class="fa-solid fa-volume-high text-xs sm:text-sm"></i>
-                </button>
-
-                <!-- Theme Switcher -->
-                <div class="flex bg-surface-subtle border border-theme p-1 rounded-xl gap-1">
-                    <button onclick="app.setTheme('light')" id="themeBtnLight" class="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all text-muted hover:text-ink">
-                        <i class="fa-solid fa-sun mr-1"></i><span class="hidden md:inline">Light</span>
-                    </button>
-                    <button onclick="app.setTheme('dark')" id="themeBtnDark" class="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all text-muted hover:text-ink">
-                        <i class="fa-solid fa-moon mr-1"></i><span class="hidden md:inline">Dark</span>
-                    </button>
-                </div>
-
-                <!-- Reset Progress Button -->
-                <button onclick="app.promptResetModal()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-theme bg-surface-subtle text-muted hover:text-red-500 hover:border-red-400 flex items-center justify-center transition-all" title="Reset Progress">
-                    <i class="fa-solid fa-rotate-left text-xs sm:text-sm"></i>
-                </button>
-            </div>
+            <span class="text-white text-base font-serif">]</span>
+          </div>
         </div>
-    </header>
+        <div>
+          <h1 class="text-lg font-black tracking-tight flex items-center gap-1.5 leading-none">
+            <span class="brand-matrices">MATRICES</span>
+            <span class="brand-masters">MASTERS</span>
+          </h1>
+          <p class="text-[11px] text-gray-500 font-semibold tracking-wide mt-1">MTCF 0114 • Chapter 6</p>
+        </div>
+      </div>
 
-    <div class="flex-1 max-w-[1500px] w-full mx-auto flex flex-col lg:flex-row relative">
+      <!-- RIGHT SIDE CONTROLS & STATUS -->
+      <div class="flex items-center space-x-3 sm:space-x-4">
+        <div id="cloud-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-light text-amber-dark border border-amber/30">
+          <span class="w-2 h-2 rounded-full bg-amber animate-pulse"></span>
+          <span id="cloud-status-text">Connecting...</span>
+        </div>
+
+        <button onclick="app.showTeacherAccessModal()" class="px-3.5 py-1.5 rounded-xl bg-gray-100 hover:bg-teal-light text-gray-700 hover:text-teal font-semibold text-xs border border-gray-300 hover:border-teal/30 transition-all flex items-center gap-2">
+          <i class="fa-solid fa-user-gear text-teal"></i>
+          <span class="hidden sm:inline">TEACHER DASHBOARD</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTENT CONTAINER -->
+  <main id="app-viewport" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Dynamic Views will render here via JavaScript -->
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-gray-200 py-4 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500">
+      <p class="font-semibold text-gray-700 flex items-center justify-center gap-1.5 flex-wrap">
+        <span class="brand-matrices text-xs">MATRICES</span>
+        <span class="brand-masters text-xs">MASTERS</span>
+        <span>• MTCF 0114 Foundation Mathematics • Centre for Foundation Studies (CFS IIUM)</span>
+      </p>
+      <p class="mt-1 text-gray-400">Authored by Suhaila Bahrom • Department of Mathematics</p>
+    </div>
+  </footer>
+
+  <!-- MODALS CONTAINER -->
+  <div id="modal-container" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div id="modal-content" class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-teal/20">
+      <!-- Modal dynamically populated -->
+    </div>
+  </div>
+
+  <!-- FIREBASE: uses your existing matrices-firebase-config.js in the same folder as index.html -->
+  <script>
+    // Keep compatibility with older config files that may expose different global names.
+    window.__firebaseConfigReady = false;
+
+    function getExistingFirebaseConfig() {
+      return window.__firebase_config || window.firebaseConfig || window.FIREBASE_CONFIG || null;
+    }
+
+    function loadFirebaseConfigFile() {
+      return new Promise((resolve, reject) => {
+        const existing = getExistingFirebaseConfig();
+        if (existing) {
+          resolve(existing);
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.src = './matrices-firebase-config.js';
+        script.async = true;
+        script.onload = () => {
+          const cfg = getExistingFirebaseConfig();
+          if (cfg) resolve(cfg);
+          else reject(new Error('matrices-firebase-config.js loaded, but no Firebase config object was found. Expected window.__firebase_config, window.firebaseConfig, or window.FIREBASE_CONFIG.'));
+        };
+        script.onerror = () => reject(new Error('Cannot load ./matrices-firebase-config.js. Keep this file beside index.html when deploying.'));
+        document.head.appendChild(script);
+      });
+    }
+  </script>
+
+  <!-- FIREBASE MODULAR SDK INJECTION -->
+  <script type="module">
+    import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    window.FirebaseDB = null;
+    window.FirestoreOps = { collection, addDoc, getDocs, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, doc };
+
+    function setCloudState(status) {
+      if (window.app) {
+        window.app.setCloudStatus(status);
+      } else {
+        window.__pendingCloudStatus = status;
+      }
+    }
+
+    async function initFirebase() {
+      setCloudState('connecting');
+
+      try {
+        const firebaseConfig = await window.loadFirebaseConfigFile();
+
+        if (!firebaseConfig?.apiKey || !firebaseConfig?.projectId) {
+          throw new Error('Firebase config is missing apiKey or projectId.');
+        }
+
+        // Avoid duplicate-app errors if Firebase is initialised more than once.
+        const firebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
+        const db = getFirestore(firebaseApp);
+
+        window.FirebaseDB = db;
+        window.__firebaseConfigReady = true;
+
+        console.log('Firebase project:', firebaseConfig.projectId);
+        console.log('Firestore collection: chapter6Results');
+
+        setCloudState('connected');
+
+        if (window.app) {
+          window.app.subscribeRealtimeLeaderboard();
+        }
+      } catch (err) {
+        console.error('Firebase initialization error:', err);
+        window.__firebaseConfigReady = false;
+        setCloudState('local');
+      }
+    }
+
+    // Expose retry helper for debugging/deployment without reloading the page.
+    window.retryFirebaseConnection = initFirebase;
+    initFirebase();
+  </script>
+
+  <script>
+    // Helper function to normalise section strings cleanly ("Section 821" -> "821")
+    function normaliseSection(val) {
+      if (!val) return '821';
+      const str = String(val).trim().replace(/^Section\s+/i, '').trim();
+      if (!str) return '821';
+      return str;
+    }
+
+    // Helper function to normalise student names
+    function normaliseStudentName(val) {
+      if (!val) return 'anonymous';
+      return String(val).trim().replace(/\s+/g, ' ').toLowerCase();
+    }
+
+    // Helper function to remove redundant option labels (e.g. "A) ", "B. ", "C: ")
+    function cleanOptionLabel(val) {
+      if (!val) return '';
+      return String(val).replace(/^\s*[A-Da-d]\s*[\)\.\:\-]\s*/, '').trim();
+    }
+
+    // ==================================================================
+    // QUESTION BANK (10 MTCF 0114 CHAPTER 6 MATHEMATICALLY VERIFIED QUESTIONS)
+    // ==================================================================
+    const QUESTION_BANK = [
+      {
+        id: 1,
+        difficulty: "Basic",
+        topic: "Matrix Order & Compatibility",
+        question: "Given $A = \\begin{bmatrix} 2 & -1 & 3 \\\\ 0 & 4 & 5 \\end{bmatrix}$ and $B = \\begin{bmatrix} 1 & 2 \\\\ -3 & 0 \\\\ 4 & -1 \\end{bmatrix}$. Which statement about $AB$ is correct?",
+        options: [
+          "$AB$ is undefined because $A$ and $B$ have different orders.",
+          "$AB$ is defined and $AB = \\begin{bmatrix} 17 & 1 \\\\ 8 & -5 \\end{bmatrix}$.",
+          "$AB$ is defined and $AB = \\begin{bmatrix} 17 & -1 \\\\ 8 & 5 \\end{bmatrix}$.",
+          "$AB$ is defined and has order $3 \\times 3$."
+        ],
+        correct: 1,
+        why: "Matrix $A$ is $2 \\times 3$ and matrix $B$ is $3 \\times 2$. Since the inner dimensions are equal, $AB$ is defined and has order $2 \\times 2$.",
+        working: "$$AB=\\begin{bmatrix}2&-1&3\\\\0&4&5\\end{bmatrix}\\begin{bmatrix}1&2\\\\-3&0\\\\4&-1\\end{bmatrix}=\\begin{bmatrix}2(1)+(-1)(-3)+3(4)&2(2)+(-1)(0)+3(-1)\\\\0(1)+4(-3)+5(4)&0(2)+4(0)+5(-1)\\end{bmatrix}=\\begin{bmatrix}17&1\\\\8&-5\\end{bmatrix}.$$",
+        commonError: "Checking whether the two matrices have the same order instead of checking whether the number of columns of the first matrix equals the number of rows of the second matrix.",
+        keyTakeaway: "For $A_{m\\times n}B_{n\\times p}$, the product $AB$ is defined and has order $m\\times p$."
+      },
+      {
+        id: 2,
+        difficulty: "Basic",
+        topic: "Matrix Equation",
+        question: "Given $A = \\begin{bmatrix} 1 & -2 \\\\ 3 & 0 \\end{bmatrix}$ and $B = \\begin{bmatrix} 2 & 1 \\\\ -1 & 4 \\end{bmatrix}$, find matrix $X$ if $X-A=2B$.",
+        options: [
+          "$X=\\begin{bmatrix}5&0\\\\1&8\\end{bmatrix}$",
+          "$X=\\begin{bmatrix}3&4\\\\5&-8\\end{bmatrix}$",
+          "$X=\\begin{bmatrix}4&2\\\\-2&8\\end{bmatrix}$",
+          "$X=\\begin{bmatrix}5&-4\\\\1&4\\end{bmatrix}$"
+        ],
+        correct: 0,
+        why: "Rearrange the matrix equation to $X=A+2B$, then perform scalar multiplication and matrix addition entry by entry.",
+        working: "$$X=A+2B=\\begin{bmatrix}1&-2\\\\3&0\\end{bmatrix}+2\\begin{bmatrix}2&1\\\\-1&4\\end{bmatrix}=\\begin{bmatrix}1&-2\\\\3&0\\end{bmatrix}+\\begin{bmatrix}4&2\\\\-2&8\\end{bmatrix}=\\begin{bmatrix}5&0\\\\1&8\\end{bmatrix}.$$",
+        commonError: "Subtracting $2B$ from $A$ instead of adding $2B$ after rearranging $X-A=2B$.",
+        keyTakeaway: "Matrix equations can be rearranged algebraically provided the matrix operations are dimensionally valid."
+      },
+      {
+        id: 3,
+        difficulty: "Basic",
+        topic: "Matrix Equality",
+        question: "Given $$2\\begin{bmatrix}x&y\\\\z&w\\end{bmatrix}=\\begin{bmatrix}x&4\\\\1&w\\end{bmatrix}+\\begin{bmatrix}3&x+y\\\\z+w&2\\end{bmatrix},$$ find $x,y,z$ and $w$.",
+        options: [
+          "$x=3,\\ y=7,\\ z=3,\\ w=2$",
+          "$x=3,\\ y=1,\\ z=2,\\ w=3$",
+          "$x=6,\\ y=7,\\ z=3,\\ w=1$",
+          "$x=3,\\ y=7,\\ z=1,\\ w=2$"
+        ],
+        correct: 0,
+        why: "Equal matrices have equal corresponding entries. Equate the four corresponding positions and solve the resulting scalar equations.",
+        working: "$$2x=x+3\\Rightarrow x=3,$$$$2y=4+x+y\\Rightarrow y=4+x=7,$$$$2w=w+2\\Rightarrow w=2,$$$$2z=1+z+w\\Rightarrow z=1+w=3.$$",
+        commonError: "Equating entries from different positions or forgetting that the scalar $2$ multiplies every entry on the left-hand side.",
+        keyTakeaway: "If two matrices are equal, every pair of corresponding entries must be equal."
+      },
+      {
+        id: 4,
+        difficulty: "Intermediate",
+        topic: "Matrix Multiplication with Unknowns",
+        question: "Given $A=\\begin{bmatrix}2&-1&3\\\\1&4&-2\\\\0&5&1\\end{bmatrix}$ and $B=\\begin{bmatrix}a&1&0\\\\2&b&-1\\\\-1&3&c\\end{bmatrix}$, and $$AB=\\begin{bmatrix}-1&12&10\\\\12&-9&-10\\\\9&-2&-2\\end{bmatrix},$$ find $a,b$ and $c$.",
+        options: [
+          "$a=2,\\ b=-1,\\ c=3$",
+          "$a=-2,\\ b=1,\\ c=3$",
+          "$a=2,\\ b=1,\\ c=-3$",
+          "$a=1,\\ b=-2,\\ c=3$"
+        ],
+        correct: 0,
+        why: "Use selected entries of the product $AB$ that isolate the unknowns. Each product entry is a row-by-column dot product.",
+        working: "$$(AB)_{11}=2a-2-3=-1\\Rightarrow2a=4\\Rightarrow a=2,$$$$(AB)_{12}=2(1)+(-1)b+3(3)=12\\Rightarrow11-b=12\\Rightarrow b=-1,$$$$(AB)_{13}=2(0)+(-1)(-1)+3c=10\\Rightarrow1+3c=10\\Rightarrow c=3.$$",
+        commonError: "Multiplying corresponding entries instead of using row-by-column multiplication, or using the wrong product entry for an unknown.",
+        keyTakeaway: "An entry of $AB$ is obtained from the dot product of a row of $A$ with a column of $B$."
+      },
+      {
+        id: 5,
+        difficulty: "Intermediate",
+        topic: "Identity Matrix Relation",
+        question: "Matrices $P=\\begin{bmatrix}1&0&0\\\\-2&3&0\\\\8&2&1\\end{bmatrix}$ and $Q=\\begin{bmatrix}a&0&0\\\\b&3&0\\\\c&1&2\\end{bmatrix}$ satisfy $P=mQ+nI_3$, where $a,b,c,m,n$ are real numbers. Find $(a,b,c,m,n)$.",
+        options: [
+          "$(2,-1,4,2,-3)$",
+          "$(2,1,4,2,-3)$",
+          "$(1,-1,4,2,-1)$",
+          "$(2,-1,2,3,-5)$"
+        ],
+        correct: 0,
+        why: "Compare corresponding entries of $P=mQ+nI_3$. Off-diagonal entries determine $m,b,c$, while diagonal entries determine $n$ and $a$.",
+        working: "$$P=mQ+nI_3.$$From entry $(3,2)$: $m(1)=2\\Rightarrow m=2$. From $(2,1)$: $2b=-2\\Rightarrow b=-1$. From $(3,1)$: $2c=8\\Rightarrow c=4$. From $(2,2)$: $2(3)+n=3\\Rightarrow n=-3$. From $(1,1)$: $2a-3=1\\Rightarrow a=2$.",
+        commonError: "Adding $n$ to every entry of $mQ$. The term $nI_3$ affects only the main diagonal entries.",
+        keyTakeaway: "In $mQ+nI$, the identity-matrix term changes only diagonal entries."
+      },
+      {
+        id: 6,
+        difficulty: "Intermediate",
+        topic: "Elementary Row Operations",
+        question: "For the augmented matrix $$\\left[\\begin{array}{ccc|c}1&2&-1&3\\\\2&5&1&8\\\\3&7&0&11\\end{array}\\right],$$ which pair of elementary row operations correctly eliminates the first entries of Rows 2 and 3?",
+        options: [
+          "$R_2-2R_1\\to R_2$ and $R_3-3R_1\\to R_3$",
+          "$R_2+2R_1\\to R_2$ and $R_3+3R_1\\to R_3$",
+          "$2R_2-R_1\\to R_2$ and $3R_3-R_1\\to R_3$",
+          "$R_1-2R_2\\to R_2$ and $R_1-3R_3\\to R_3$"
+        ],
+        correct: 0,
+        why: "The first-column entries below the leading 1 are 2 and 3. Subtracting $2R_1$ from $R_2$ and $3R_1$ from $R_3$ makes both entries zero.",
+        working: "$$R_2-2R_1=[0,1,3\\mid2],\\qquad R_3-3R_1=[0,1,3\\mid2].$$Thus the first column becomes $\\begin{bmatrix}1&0&0\\end{bmatrix}^{T}$ below the leading entry.",
+        commonError: "Using addition instead of subtraction, which changes the first-column entries to 4 and 6 rather than zero.",
+        keyTakeaway: "Choose row-operation multipliers specifically to create zeros below the current leading entry."
+      },
+      {
+        id: 7,
+        difficulty: "Intermediate",
+        topic: "Gaussian Elimination",
+        question: "Solve the system using Gaussian elimination: $$\\begin{cases}x+y+z=4,\\\\2x+3y-z=1,\\\\x-2y+2z=9.\\end{cases}$$",
+        options: [
+          "$(x,y,z)=(3,-1,2)$",
+          "$(x,y,z)=(3,1,2)$",
+          "$(x,y,z)=(2,-1,3)$",
+          "$(x,y,z)=(-3,1,2)$"
+        ],
+        correct: 0,
+        why: "Write the augmented matrix, reduce it to row echelon form, then use back-substitution.",
+        working: "$$\\left[\\begin{array}{ccc|c}1&1&1&4\\\\2&3&-1&1\\\\1&-2&2&9\\end{array}\\right]\\xrightarrow{R_2-2R_1,\\ R_3-R_1}\\left[\\begin{array}{ccc|c}1&1&1&4\\\\0&1&-3&-7\\\\0&-3&1&5\\end{array}\\right]$$$$\\xrightarrow{R_3+3R_2}\\left[\\begin{array}{ccc|c}1&1&1&4\\\\0&1&-3&-7\\\\0&0&-8&-16\\end{array}\\right].$$Hence $z=2$, $y-3(2)=-7\\Rightarrow y=-1$, and $x-1+2=4\\Rightarrow x=3$.",
+        commonError: "Performing a row operation on the coefficient entries but forgetting to apply it to the augmented column.",
+        keyTakeaway: "Gaussian elimination reduces the augmented matrix to echelon form before back-substitution."
+      },
+      {
+        id: 8,
+        difficulty: "Challenging",
+        topic: "Parameter System — No Solution",
+        question: "Consider $$\\begin{cases}x+2y+z=3,\\\\2x+5y-z=4,\\\\3x+7y+kz=k+10,\\end{cases}$$ where $k$ is a constant. Using elementary row operations, find the value of $k$ for which the system has no solution.",
+        options: [
+          "$k=0$",
+          "$k=-3$",
+          "$k=3$",
+          "$k\\neq0$"
+        ],
+        correct: 0,
+        why: "A system has no solution when row reduction produces a row of the form $[0\\ 0\\ 0\\mid c]$ with $c\\neq0$.",
+        working: "$$\\left[\\begin{array}{ccc|c}1&2&1&3\\\\2&5&-1&4\\\\3&7&k&k+10\\end{array}\\right]$$Apply $R_2-2R_1\\to R_2$ and $R_3-3R_1\\to R_3$: $$\\left[\\begin{array}{ccc|c}1&2&1&3\\\\0&1&-3&-2\\\\0&1&k-3&k+1\\end{array}\\right].$$Then $R_3-R_2\\to R_3$: $$\\left[\\begin{array}{ccc|c}1&2&1&3\\\\0&1&-3&-2\\\\0&0&k&k+3\\end{array}\\right].$$For no solution, $k=0$ and $k+3\\neq0$. Therefore $k=0$.",
+        commonError: "Setting the last augmented entry equal to zero as well. For no solution, the coefficient side must become zero while the augmented entry remains non-zero.",
+        keyTakeaway: "No solution occurs when row reduction gives $0=c$ for some non-zero constant $c$."
+      },
+      {
+        id: 9,
+        difficulty: "Challenging",
+        topic: "Parameter System — Infinitely Many Solutions",
+        question: "The augmented matrix $$\\left[\\begin{array}{ccc|c}1&2&-1&3\\\\2&5&1&8\\\\3&7&k&h\\end{array}\\right]$$ represents a system in $x,y,z$, where $k$ and $h$ are constants. Find $(k,h)$ so that the system has infinitely many solutions.",
+        options: [
+          "$(k,h)=(0,11)$",
+          "$(k,h)=(0,8)$",
+          "$(k,h)=(3,11)$",
+          "$(k,h)=(-3,11)$"
+        ],
+        correct: 0,
+        why: "For infinitely many solutions, the final row must reduce to all zeros, giving a consistent system with at least one free variable.",
+        working: "$$R_2-2R_1\\to R_2:\\ [0,1,3\\mid2],$$$$R_3-3R_1\\to R_3:\\ [0,1,k+3\\mid h-9].$$Then $$R_3-R_2\\to R_3:\\ [0,0,k\\mid h-11].$$For this row to be $[0,0,0\\mid0]$, we require $k=0$ and $h=11$.",
+        commonError: "Using only $k=0$ and ignoring the augmented entry. Both sides of the final row must become zero for infinitely many solutions.",
+        keyTakeaway: "Infinitely many solutions require consistency plus at least one free variable; a zero row is a common indicator."
+      },
+      {
+        id: 10,
+        difficulty: "Challenging",
+        topic: "Inverse Matrix & Solving $AX=B$",
+        question: "Given $$A=\\begin{bmatrix}1&2&1\\\\2&1&-1\\\\3&-1&2\\end{bmatrix},\\quad A^{-1}=\\frac{1}{18}\\begin{bmatrix}-1&5&3\\\\7&1&-3\\\\5&-7&3\\end{bmatrix},\\quad B=\\begin{bmatrix}3\\\\0\\\\13\\end{bmatrix},$$ solve $AX=B$.",
+        options: [
+          "$X=\\begin{bmatrix}2\\\\-1\\\\3\\end{bmatrix}$",
+          "$X=\\begin{bmatrix}2\\\\1\\\\3\\end{bmatrix}$",
+          "$X=\\begin{bmatrix}3\\\\-1\\\\2\\end{bmatrix}$",
+          "$X=\\begin{bmatrix}-2\\\\1\\\\3\\end{bmatrix}$"
+        ],
+        correct: 0,
+        why: "Pre-multiply $AX=B$ by $A^{-1}$ to obtain $X=A^{-1}B$.",
+        working: "$$X=A^{-1}B=\\frac{1}{18}\\begin{bmatrix}-1&5&3\\\\7&1&-3\\\\5&-7&3\\end{bmatrix}\\begin{bmatrix}3\\\\0\\\\13\\end{bmatrix}=\\frac{1}{18}\\begin{bmatrix}-3+39\\\\21-39\\\\15+39\\end{bmatrix}=\\frac{1}{18}\\begin{bmatrix}36\\\\-18\\\\54\\end{bmatrix}=\\begin{bmatrix}2\\\\-1\\\\3\\end{bmatrix}.$$",
+        commonError: "Multiplying in the wrong order or treating matrix multiplication as entry-wise multiplication.",
+        keyTakeaway: "For an invertible matrix $A$, the solution of $AX=B$ is $X=A^{-1}B$."
+      }
+    ];
+
+    // ==================================================================
+    // APPLICATION STATE MANAGER
+    // ==================================================================
+    class MatricesMastersApp {
+      constructor() {
+        this.currentView = 'landing';
+        this.student = { name: '', section: '821' };
+        this.quizState = {
+          currentIndex: 0,
+          answers: new Array(10).fill(null),
+          submitted: new Array(10).fill(false),
+          startTime: null,
+          endTime: null,
+          elapsedSeconds: 0,
+          timerInterval: null
+        };
+        this.cloudStatus = 'connecting'; // 'connected', 'connecting', 'local'
+        this.teacherAuthenticated = false;
+        this.teacherSectionFilter = 'ALL';
+        this.allFirestoreRecords = []; // All raw documents loaded from Firestore
+        this.leaderboardData = []; // Processed Best Attempts per student
+        this.loginAttempts = 0;
+        this.lockoutUntil = null;
+        this.unsubscribeLeaderboard = null; // Prevent duplicate Firestore listeners
+      }
+
+      init() {
+        if (window.__pendingCloudStatus) {
+          this.setCloudStatus(window.__pendingCloudStatus);
+        }
+        if (window.FirebaseDB) {
+          this.subscribeRealtimeLeaderboard();
+        }
+        this.render();
+      }
+
+      getCollectionRef() {
+        if (!window.FirebaseDB) return null;
+        const { collection } = window.FirestoreOps;
+        return collection(window.FirebaseDB, 'chapter6Results');
+      }
+
+      setCloudStatus(status) {
+        this.cloudStatus = status;
+        const badge = document.getElementById('cloud-status-badge');
+        const text = document.getElementById('cloud-status-text');
         
-        <!-- MOBILE NAVIGATION DRAWER OVERLAY -->
-        <div id="mobileDrawer" class="hidden lg:hidden fixed inset-x-0 top-16 bg-navy-900/95 backdrop-blur-md border-b border-navy-700 z-30 p-4 shadow-2xl animate-fade-in space-y-4">
-            <div class="flex items-center justify-between pb-2 border-b border-navy-800">
-                <span class="text-xs font-bold uppercase tracking-widest text-slate-300">Learning Journey Navigation</span>
-                <span id="mobileProgressText" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30">0 / 7 Completed</span>
-            </div>
-            <nav id="mobileStepNav" class="space-y-1.5 max-h-[60vh] overflow-y-auto pr-1">
-                <!-- Rendered dynamically -->
-            </nav>
-        </div>
+        if (!badge || !text) return;
 
-        <!-- LEFT SIDEBAR — FIXED/STICKY TABS NAVIGATION -->
-        <aside class="hidden lg:flex w-[26%] xl:w-[22%] bg-navy-900 text-slate-100 p-5 xl:p-6 flex-col justify-between border-r border-navy-800 sticky top-20 h-[calc(100vh-5rem)] flex-shrink-0">
-            <div class="flex flex-col min-h-0">
-                <!-- Sidebar Header -->
-                <div class="mb-5 pb-4 border-b border-navy-800">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold tracking-widest text-slate-400 uppercase">Learning Journey</span>
-                        <span id="badgeCounter" class="text-[11px] font-bold bg-violet-600/30 text-violet-300 border border-violet-500/30 px-2.5 py-0.5 rounded-full">
-                            0 / 7 Completed
-                        </span>
-                    </div>
-                    <!-- Sidebar Mini Progress Bar -->
-                    <div class="w-full h-1.5 bg-navy-800 rounded-full overflow-hidden mt-2">
-                        <div id="sidebarProgressBar" class="h-full bg-gradient-to-r from-violet-500 to-peach-400 transition-all duration-300" style="width: 0%"></div>
-                    </div>
+        if (status === 'connected') {
+          badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-teal-light text-teal border border-teal/30";
+          badge.querySelector('span').className = "w-2 h-2 rounded-full bg-teal animate-pulse";
+          text.textContent = "Cloud Connected";
+        } else if (status === 'local') {
+          badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 border border-gray-300";
+          badge.querySelector('span').className = "w-2 h-2 rounded-full bg-gray-400";
+          text.textContent = "Local Mode (Cloud Unavailable)";
+        }
+      }
+
+      normalizeName(name) {
+        return normaliseStudentName(name);
+      }
+
+      navigateTo(view) {
+        this.currentView = view;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        this.render();
+      }
+
+      render() {
+        const viewport = document.getElementById('app-viewport');
+        if (!viewport) return;
+
+        switch (this.currentView) {
+          case 'landing':
+            viewport.innerHTML = this.renderLandingPage();
+            break;
+          case 'notes':
+            viewport.innerHTML = this.renderQuickNotes();
+            break;
+          case 'quiz':
+            viewport.innerHTML = this.renderQuizScreen();
+            break;
+          case 'results':
+            viewport.innerHTML = this.renderResultsScreen();
+            break;
+          case 'review':
+            viewport.innerHTML = this.renderReviewScreen();
+            break;
+          case 'teacher':
+            viewport.innerHTML = this.renderTeacherDashboard();
+            break;
+          default:
+            viewport.innerHTML = this.renderLandingPage();
+        }
+
+        // Trigger KaTeX rendering across all dynamically inserted mathematical content
+        setTimeout(() => this.triggerKaTeX(), 50);
+      }
+
+      triggerKaTeX(targetNode) {
+        const container = targetNode || document.getElementById('app-viewport') || document.body;
+        
+        if (window.renderMathInElement) {
+          try {
+            window.renderMathInElement(container, {
+              delimiters: [
+                { left: '$$', right: '$$', display: true },
+                { left: '$', right: '$', display: false },
+                { left: '\\(', right: '\\)', display: false },
+                { left: '\\[', right: '\\]', display: true }
+              ],
+              throwOnError: false,
+              ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+            });
+          } catch (e) {
+            console.error("KaTeX Auto-render Error:", e);
+          }
+        } else if (window.katex) {
+          container.querySelectorAll('.math-render').forEach(el => {
+            try {
+              const latex = el.getAttribute('data-latex') || el.textContent;
+              window.katex.render(latex, el, {
+                displayMode: el.classList.contains('math-display'),
+                throwOnError: false
+              });
+            } catch (e) {
+              console.error("KaTeX Error:", e);
+            }
+          });
+        }
+      }
+
+      // ----------------------------------------------------------------
+      // LANDING PAGE RENDERER
+      // ----------------------------------------------------------------
+      renderLandingPage() {
+        return `
+          <div class="max-w-4xl mx-auto space-y-8 py-4">
+            <!-- Hero Card -->
+            <div class="bg-gradient-to-br from-teal-dark via-teal to-teal/90 rounded-3xl p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden">
+              <div class="absolute -right-10 -bottom-10 opacity-10 text-white text-9xl font-mono select-none pointer-events-none">
+                [A|I]
+              </div>
+              
+              <div class="relative z-10 space-y-5">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium tracking-wide">
+                  <span class="w-2 h-2 rounded-full bg-amber animate-pulse"></span>
+                  MTCF 0114 • FOUNDATION MATHEMATICS
                 </div>
-
-                <!-- Navigation Tabs List -->
-                <nav id="stepNav" class="space-y-1.5 overflow-y-auto pr-1 text-sm flex-1 scrollbar-thin" aria-label="Learning steps navigation">
-                    <!-- Nav items rendered dynamically -->
-                </nav>
-            </div>
-
-            <!-- Sidebar Footer -->
-            <div class="pt-4 border-t border-navy-800 text-xs text-slate-400 space-y-3 flex-shrink-0">
-                <div class="p-3 rounded-xl bg-navy-800/60 border border-navy-700/50">
-                    <p class="text-slate-300 font-medium text-[11px] leading-snug">
-                        <i class="fa-solid fa-quote-left text-peach-400 mr-1"></i> AI creates answers.
-                    </p>
-                    <p class="text-peach-300 font-bold text-xs mt-0.5">Humans retain the thinking.</p>
-                </div>
-                <div class="flex items-center justify-between text-[11px] text-slate-500">
-                    <span>WEBINAR SIMULATION</span>
-                    <span id="saveStatus" class="text-emerald-400 transition-opacity duration-300"><i class="fa-solid fa-cloud-check mr-1"></i>Saved</span>
-                </div>
-            </div>
-        </aside>
-
-        <!-- RIGHT SIDEBAR / CONTENT PANEL -->
-        <main class="flex-1 lg:w-[74%] xl:w-[78%] p-4 sm:p-6 lg:p-10 flex flex-col justify-between min-w-0">
-            <div>
-                <!-- Top Step Status Indicator -->
-                <div class="mb-6 flex items-center justify-between pb-3 border-b border-theme">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-violet-600 animate-pulse"></span>
-                        <span id="stageLabel" class="text-xs font-bold tracking-wider text-muted uppercase">OVERVIEW</span>
-                    </div>
-                    <span id="stepCounterText" class="text-xs font-mono font-bold text-violet-600 dark:text-violet-400 bg-surface-subtle border border-theme px-3 py-1 rounded-full">00 / 07</span>
-                </div>
-
-                <!-- DYNAMIC SCREEN CONTAINER -->
-                <section id="screen" class="min-h-[480px] max-w-4xl mx-auto" aria-live="polite">
-                    <!-- Dynamic screen content loaded here -->
-                </section>
-            </div>
-
-            <!-- FOOTER BAR -->
-            <footer class="mt-10 pt-6 border-t border-theme flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted max-w-4xl mx-auto w-full">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-shield-halved text-violet-500"></i>
-                    <span id="footerStatusText">Interactive Educator Microlearning · 2026</span>
-                </div>
-                <div class="flex items-center gap-4">
-                    <a href="https://www.ted.com/talks/priya_lakhani_this_is_how_kids_should_be_learning_with_ai" target="_blank" rel="noopener" class="hover:text-violet-600 transition-colors flex items-center gap-1">
-                        <span>TED Resource</span>
-                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                    </a>
-                    <span>•</span>
-                    <span>THINK / LAB</span>
-                </div>
-            </footer>
-        </main>
-    </div>
-
-    <!-- CUSTOM INLINE CONFIRMATION MODAL (No alert or confirm used) -->
-    <div id="resetModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-        <div class="bg-surface border border-theme rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-            <div class="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl font-bold">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
-            <div>
-                <h3 class="font-display font-bold text-lg text-ink">Reset All Progress?</h3>
-                <p class="text-xs text-muted mt-1 leading-relaxed">
-                    This will clear your responses, notes, and module progress from this browser session. You will return to the Overview.
+                
+                <!-- BRAND HERO TITLE -->
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none flex flex-wrap items-center gap-x-3 gap-y-2 py-1">
+                  <span class="inline-flex items-center justify-center w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/10 border border-amber/40 backdrop-blur-md text-amber font-mono text-xl sm:text-2xl shadow-inner select-none">
+                    <span class="text-white font-serif">[</span>
+                    <span class="text-amber text-xs sm:text-sm font-bold mx-0.5">$a_{ij}$</span>
+                    <span class="text-white font-serif">]</span>
+                  </span>
+                  <span class="brand-matrices-hero">MATRICES</span>
+                  <span class="brand-masters-hero">MASTERS</span>
+                </h1>
+                
+                <p class="text-lg sm:text-xl font-medium text-teal-light">
+                  Chapter 6: Matrices & Systems of Linear Equations
                 </p>
+
+                <div class="pt-1 pb-2">
+                  <div class="text-xs sm:text-sm font-bold tracking-widest text-amber uppercase bg-black/20 inline-block px-4 py-2 rounded-xl border border-amber/30">
+                    MASTER THE MATRIX. SOLVE THE SYSTEM. EXPLAIN THE LOGIC.
+                  </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                  <button onclick="app.showRegistrationModal()" class="px-8 py-4 rounded-2xl bg-coral hover:bg-coral-dark text-white font-bold text-base shadow-lg shadow-coral/30 hover:scale-[1.02] transition-all flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-play"></i>
+                    <span>START CHALLENGE</span>
+                  </button>
+                  <button onclick="app.navigateTo('notes')" class="px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold text-base border border-white/30 hover:scale-[1.02] transition-all flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>QUICK REVISION</span>
+                  </button>
+                </div>
+              </div>
             </div>
-            <div class="flex items-center justify-end gap-3 pt-2">
-                <button onclick="app.closeResetModal()" class="px-4 py-2 rounded-xl border border-theme bg-surface-subtle text-ink hover:bg-surface text-xs font-bold transition-all">
-                    Cancel
-                </button>
-                <button onclick="app.executeReset()" class="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold shadow-md transition-all">
-                    Confirm Reset
-                </button>
+
+            <!-- Features Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div class="glass-card p-5 rounded-2xl text-center space-y-2">
+                <div class="w-10 h-10 rounded-xl bg-teal-light text-teal flex items-center justify-center mx-auto text-lg font-bold">
+                  <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div class="font-bold text-sm text-gray-800">10 Questions</div>
+                <div class="text-xs text-gray-500">MTCF 0114 Standard</div>
+              </div>
+
+              <div class="glass-card p-5 rounded-2xl text-center space-y-2">
+                <div class="w-10 h-10 rounded-xl bg-amber-light text-amber-dark flex items-center justify-center mx-auto text-lg font-bold">
+                  <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div class="font-bold text-sm text-gray-800">Instant Feedback</div>
+                <div class="text-xs text-gray-500">Immediate Working</div>
+              </div>
+
+              <div class="glass-card p-5 rounded-2xl text-center space-y-2">
+                <div class="w-10 h-10 rounded-xl bg-coral-light text-coral flex items-center justify-center mx-auto text-lg font-bold">
+                  <i class="fa-solid fa-lightbulb"></i>
+                </div>
+                <div class="font-bold text-sm text-gray-800">Explanations</div>
+                <div class="text-xs text-gray-500">Misconceptions & Rules</div>
+              </div>
+
+              <div class="glass-card p-5 rounded-2xl text-center space-y-2">
+                <div class="w-10 h-10 rounded-xl bg-teal-light text-teal flex items-center justify-center mx-auto text-lg font-bold">
+                  <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div class="font-bold text-sm text-gray-800">Cloud Sync</div>
+                <div class="text-xs text-gray-500">Live Leaderboard</div>
+              </div>
             </div>
-        </div>
-    </div>
+          </div>
+        `;
+      }
 
-    <script>
-        // WEB AUDIO SYNTHESIZER ENGINE
-        class SoundEngine {
-            constructor() {
-                this.ctx = null;
-                this.enabled = true;
-            }
+      // ----------------------------------------------------------------
+      // REGISTRATION MODAL
+      // ----------------------------------------------------------------
+      showRegistrationModal() {
+        const modalContainer = document.getElementById('modal-container');
+        const modalContent = document.getElementById('modal-content');
 
-            init() {
-                if (!this.ctx) {
-                    const AudioContext = window.AudioContext || window.webkitAudioContext;
-                    if (AudioContext) this.ctx = new AudioContext();
-                }
-            }
+        modalContent.innerHTML = `
+          <div class="space-y-6">
+            <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+              <h3 class="text-xl font-extrabold text-gray-900 flex items-center gap-2">
+                <i class="fa-solid fa-user-graduate text-teal"></i>
+                Student Registration
+              </h3>
+              <button onclick="app.closeModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+              </button>
+            </div>
 
-            playClick() {
-                if (!this.enabled) return;
-                this.init();
-                if (!this.ctx) return;
+            <form onsubmit="app.handleRegistrationSubmit(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Student Full Name</label>
+                <input type="text" id="reg-name" required placeholder="e.g. MUHAMMAD AMIR" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-teal focus:border-teal text-sm font-medium">
+              </div>
 
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(450, this.ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(850, this.ctx.currentTime + 0.04);
+              <div>
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Section</label>
+                <select id="reg-section" onchange="app.handleSectionChange(this)" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-teal focus:border-teal text-sm font-medium">
+                  <option value="821">Section 821</option>
+                  <option value="818">Section 818</option>
+                  <option value="434">Section 434</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
 
-                gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
+              <div id="other-section-container" class="hidden">
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Specify Section</label>
+                <input type="text" id="reg-section-other" placeholder="e.g. 815" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-teal focus:border-teal text-sm font-medium">
+              </div>
 
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.04);
-            }
+              <button type="submit" class="w-full py-3.5 rounded-xl bg-teal hover:bg-teal-dark text-white font-bold text-sm shadow-md shadow-teal/20 transition-all mt-4">
+                BEGIN CHALLENGE
+              </button>
+            </form>
+          </div>
+        `;
 
-            playSuccess() {
-                if (!this.enabled) return;
-                this.init();
-                if (!this.ctx) return;
+        modalContainer.classList.remove('hidden');
+      }
 
-                const now = this.ctx.currentTime;
-                const notes = [523.25, 659.25, 783.99, 1046.50];
-                notes.forEach((freq, idx) => {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+      handleSectionChange(select) {
+        const otherContainer = document.getElementById('other-section-container');
+        if (select.value === 'Others') {
+          otherContainer.classList.remove('hidden');
+        } else {
+          otherContainer.classList.add('hidden');
+        }
+      }
 
-                    gain.gain.setValueAtTime(0.0, now + idx * 0.07);
-                    gain.gain.linearRampToValueAtTime(0.1, now + idx * 0.07 + 0.02);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.22);
+      handleRegistrationSubmit(e) {
+        e.preventDefault();
+        const nameInput = document.getElementById('reg-name').value;
+        const sectionSelect = document.getElementById('reg-section').value;
+        const sectionOther = document.getElementById('reg-section-other')?.value;
 
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(now + idx * 0.07);
-                    osc.stop(now + idx * 0.07 + 0.22);
-                });
-            }
+        if (!nameInput.trim()) return;
 
-            playFanfare() {
-                if (!this.enabled) return;
-                this.init();
-                if (!this.ctx) return;
-
-                const now = this.ctx.currentTime;
-                const chords = [
-                    { freq: 440, time: 0 },
-                    { freq: 554.37, time: 0 },
-                    { freq: 659.25, time: 0 },
-                    { freq: 554.37, time: 0.14 },
-                    { freq: 659.25, time: 0.14 },
-                    { freq: 880, time: 0.14 },
-                    { freq: 659.25, time: 0.32 },
-                    { freq: 880, time: 0.32 },
-                    { freq: 1108.73, time: 0.32 }
-                ];
-
-                chords.forEach(c => {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(c.freq, now + c.time);
-                    gain.gain.setValueAtTime(0.09, now + c.time);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + c.time + 0.35);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(now + c.time);
-                    osc.stop(now + c.time + 0.35);
-                });
-            }
+        const normalizedName = this.normalizeName(nameInput);
+        let finalSection = normaliseSection(sectionSelect);
+        if (sectionSelect === 'Others' && sectionOther) {
+          finalSection = normaliseSection(sectionOther);
         }
 
-        const sound = new SoundEngine();
-
-        const STEP_NAMES = [
-            'Experience First',
-            'Watch & Think',
-            'The Key Idea',
-            'Apply Thinking',
-            'Redesign Challenge',
-            'Check Understanding',
-            'Reflect & Takeaway'
-        ];
-
-        const INITIAL_STATE = {
-            page: 0,
-            soundEnabled: true,
-            answers: {},
-            cognitive: '',
-            note: '',
-            work: '',
-            change: '',
-            quizIndex: 0,
-            quizAnswers: {},
-            compared: false,
-            submitted: false,
-            mobileMenuOpen: false,
-            completedSteps: new Set()
+        this.student = {
+          name: nameInput.trim().toUpperCase(),
+          section: finalSection
         };
 
-        class App {
-            constructor() {
-                this.state = this.loadState();
-                this.quizData = [
-                    {
-                        text: 'A student asks AI to choose the best economic policy, supply its justification, and write a conclusion. The student changes minor wording and submits it.',
-                        answer: 0,
-                        title: 'AI REPLACES THINKING',
-                        why: 'The AI makes the evaluation and supplies the rationale. Changing wording does not demonstrate that the student weighed or understood the economic policy.'
-                    },
-                    {
-                        text: 'A student solves a physics calculus problem, inputs their solution into AI asking for hints regarding possible algebraic errors, verifies the highlighted step, and writes an explanation of their correction.',
-                        answer: 1,
-                        title: 'AI SUPPORTS THINKING',
-                        why: 'AI provides targeted feedback while the student checks and repairs their own logic. The student retains ownership of the reasoning.'
-                    },
-                    {
-                        text: 'A student defends a debate position, asks AI for the strongest counterargument based on primary sources, verifies those sources independently, and revises their argument with a reflection on why their perspective shifted.',
-                        answer: 2,
-                        title: 'AI DEEPENS THINKING',
-                        why: 'The student tests their own assumptions against a competing viewpoint, checks evidence, and explicitly articulates their revised mental model.'
+        this.closeModal();
+        this.startQuizChallenge();
+      }
+
+      closeModal() {
+        document.getElementById('modal-container').classList.add('hidden');
+      }
+
+      // ----------------------------------------------------------------
+      // QUICK REVISION NOTES VIEW
+      // ----------------------------------------------------------------
+      renderQuickNotes() {
+        return `
+          <div class="max-w-4xl mx-auto space-y-6 py-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
+                  <i class="fa-solid fa-book-open text-teal"></i>
+                  Chapter 6 Quick Revision Notes
+                </h2>
+                <p class="text-xs text-gray-500 font-medium">Key Concepts, Theorems & ERO Rules</p>
+              </div>
+              <button onclick="app.showRegistrationModal()" class="px-5 py-2.5 rounded-xl bg-coral hover:bg-coral-dark text-white font-bold text-xs shadow-md shadow-coral/20">
+                START CHALLENGE
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <!-- Card 1 -->
+              <div class="glass-card p-5 rounded-2xl border-l-4 border-l-teal space-y-3">
+                <span class="text-[10px] font-bold text-teal tracking-widest uppercase bg-teal-light px-2.5 py-1 rounded-md">Card 1</span>
+                <h3 class="font-bold text-gray-900 text-base">Matrix Essentials & Order</h3>
+                <p class="text-xs text-gray-600 leading-relaxed">
+                  A matrix is a rectangular array of real numbers arranged in $m$ rows and $n$ columns ($m \\times n$).
+                </p>
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center font-mono text-xs overflow-x-auto">
+                  $$A = \\begin{bmatrix} a_{11} & a_{12} & \\dots & a_{1n} \\\\ a_{21} & a_{22} & \\dots & a_{2n} \\\\ \\vdots & \\vdots & \\ddots & \\vdots \\\\ a_{m1} & a_{m2} & \\dots & a_{mn} \\end{bmatrix}_{m \\times n}$$
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="glass-card p-5 rounded-2xl border-l-4 border-l-amber space-y-3">
+                <span class="text-[10px] font-bold text-amber-dark tracking-widest uppercase bg-amber-light px-2.5 py-1 rounded-md">Card 2</span>
+                <h3 class="font-bold text-gray-900 text-base">Types of Matrices</h3>
+                <ul class="text-xs text-gray-600 space-y-1.5 list-disc list-inside">
+                  <li><b>Row Matrix:</b> Dimension $1 \\times n$.</li>
+                  <li><b>Column Matrix:</b> Dimension $m \\times 1$.</li>
+                  <li><b>Zero Matrix ($O$):</b> All elements are 0.</li>
+                  <li><b>Identity Matrix ($I_n$):</b> Main diagonal entries are 1, rest 0.</li>
+                  <li><b>Symmetric Matrix:</b> $a_{ij} = a_{ji}$ for all $i,j$.</li>
+                </ul>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="glass-card p-5 rounded-2xl border-l-4 border-l-coral space-y-3">
+                <span class="text-[10px] font-bold text-coral tracking-widest uppercase bg-coral-light px-2.5 py-1 rounded-md">Card 3</span>
+                <h3 class="font-bold text-gray-900 text-base">Matrix Multiplication Condition</h3>
+                <p class="text-xs text-gray-600 leading-relaxed">
+                  Product $AB$ is defined IF AND ONLY IF columns of $A$ equal rows of $B$.
+                </p>
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center font-mono text-xs">
+                  $$A_{m \\times n} \\times B_{n \\times p} = (AB)_{m \\times p}$$
+                </div>
+              </div>
+
+              <!-- Card 4 -->
+              <div class="glass-card p-5 rounded-2xl border-l-4 border-l-teal space-y-3">
+                <span class="text-[10px] font-bold text-teal tracking-widest uppercase bg-teal-light px-2.5 py-1 rounded-md">Card 4</span>
+                <h3 class="font-bold text-gray-900 text-base">Elementary Row Operations (ERO)</h3>
+                <ol class="text-xs text-gray-600 space-y-1.5 list-decimal list-inside">
+                  <li><b>Row Interchange:</b> $R_i \\leftrightarrow R_j$</li>
+                  <li><b>Scalar Multiplication:</b> $k R_i \\rightarrow R_i \\ (k \\neq 0)$</li>
+                  <li><b>Row Replacement:</b> $k R_i + R_j \\rightarrow R_j$</li>
+                </ol>
+              </div>
+
+              <!-- Card 5 -->
+              <div class="glass-card p-5 rounded-2xl border-l-4 border-l-amber space-y-3">
+                <span class="text-[10px] font-bold text-amber-dark tracking-widest uppercase bg-amber-light px-2.5 py-1 rounded-md">Card 5</span>
+                <h3 class="font-bold text-gray-900 text-base">REF vs RREF Form</h3>
+                <p class="text-xs text-gray-600 leading-relaxed">
+                  <b>REF:</b> Leading entries move right; zeros below each leading entry.<br>
+                  <b>RREF:</b> Leading entry is 1 AND the ONLY non-zero entry in its column.
+                </p>
+                <div class="bg-gray-50 p-2 rounded-xl border border-gray-200 text-center font-mono text-xs">
+                  $$\\text{RREF: } \\begin{bmatrix} 1 & 0 & 0 & a \\\\ 0 & 1 & 0 & b \\\\ 0 & 0 & 1 & c \\end{bmatrix}$$
+                </div>
+              </div>
+
+              <!-- Card 6 -->
+              <div class="glass-card p-5 rounded-2xl border-l-4 border-l-coral space-y-3">
+                <span class="text-[10px] font-bold text-coral tracking-widest uppercase bg-coral-light px-2.5 py-1 rounded-md">Card 6</span>
+                <h3 class="font-bold text-gray-900 text-base">System Solution Classifications</h3>
+                <ul class="text-xs text-gray-600 space-y-1 list-disc list-inside">
+                  <li><b>Unique Solution:</b> Consistent system ($1$ solution).</li>
+                  <li><b>Infinitely Many:</b> Consistent system with free variables ($0=0$).</li>
+                  <li><b>No Solution:</b> Inconsistent system ($0 = c, \\ c \\neq 0$).</li>
+                </ul>
+              </div>
+
+              <!-- Card 7 -->
+              <div class="glass-card p-5 rounded-2xl border-l-4 border-l-teal space-y-3">
+                <span class="text-[10px] font-bold text-teal tracking-widest uppercase bg-teal-light px-2.5 py-1 rounded-md">Card 7</span>
+                <h3 class="font-bold text-gray-900 text-base">Inverse Matrix finding using ERO</h3>
+                <p class="text-xs text-gray-600 leading-relaxed">
+                  Transform the augmented matrix $[A \\mid I_n]$ to $[I_n \\mid A^{-1}]$ using valid EROs.
+                </p>
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center font-mono text-xs">
+                  $$[A \\mid I] \\xrightarrow{\\text{ERO}} [I \\mid A^{-1}]$$
+                </div>
+              </div>
+
+              <!-- Card 8 -->
+              <div class="glass-card p-5 rounded-2xl border-l-4 border-l-amber space-y-3">
+                <span class="text-[10px] font-bold text-amber-dark tracking-widest uppercase bg-amber-light px-2.5 py-1 rounded-md">Card 8</span>
+                <h3 class="font-bold text-gray-900 text-base">Solving $AX = B \\implies X = A^{-1}B$</h3>
+                <p class="text-xs text-gray-600 leading-relaxed">
+                  Pre-multiply both sides of system $AX = B$ by $A^{-1}$:
+                </p>
+                <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-center font-mono text-xs">
+                  $$A^{-1}AX = A^{-1}B \\implies IX = A^{-1}B \\implies X = A^{-1}B$$
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // ----------------------------------------------------------------
+      // QUIZ CHALLENGE CONTROLLER
+      // ----------------------------------------------------------------
+      startQuizChallenge() {
+        this.quizState = {
+          currentIndex: 0,
+          answers: new Array(10).fill(null),
+          submitted: new Array(10).fill(false),
+          startTime: new Date(),
+          endTime: null,
+          elapsedSeconds: 0,
+          timerInterval: null
+        };
+
+        this.startTimer();
+        this.navigateTo('quiz');
+      }
+
+      startTimer() {
+        if (this.quizState.timerInterval) clearInterval(this.quizState.timerInterval);
+        this.quizState.timerInterval = setInterval(() => {
+          this.quizState.elapsedSeconds++;
+          const timerEl = document.getElementById('quiz-timer');
+          if (timerEl) {
+            timerEl.textContent = this.formatDuration(this.quizState.elapsedSeconds);
+          }
+        }, 1000);
+      }
+
+      stopTimer() {
+        if (this.quizState.timerInterval) {
+          clearInterval(this.quizState.timerInterval);
+          this.quizState.timerInterval = null;
+        }
+      }
+
+      formatDuration(sec) {
+        const mins = Math.floor(sec / 60);
+        const secs = sec % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }
+
+      selectOption(optionIndex) {
+        if (this.quizState.submitted[this.quizState.currentIndex]) return; // Locked
+        this.quizState.answers[this.quizState.currentIndex] = optionIndex;
+        this.render();
+      }
+
+      submitCurrentAnswer() {
+        const idx = this.quizState.currentIndex;
+        if (this.quizState.answers[idx] === null) return;
+        this.quizState.submitted[idx] = true;
+        this.render();
+      }
+
+      prevQuestion() {
+        if (this.quizState.currentIndex > 0) {
+          this.quizState.currentIndex--;
+          this.render();
+        }
+      }
+
+      nextQuestion() {
+        if (this.quizState.currentIndex < 9) {
+          this.quizState.currentIndex++;
+          this.render();
+        } else {
+          this.finishAssessment();
+        }
+      }
+
+      finishAssessment() {
+        this.stopTimer();
+        this.quizState.endTime = new Date();
+        this.saveResultToFirestore();
+        this.navigateTo('results');
+      }
+
+      // ----------------------------------------------------------------
+      // QUIZ QUESTION SCREEN
+      // ----------------------------------------------------------------
+      renderQuizScreen() {
+        const qIdx = this.quizState.currentIndex;
+        const q = QUESTION_BANK[qIdx];
+        const selectedOpt = this.quizState.answers[qIdx];
+        const isSubmitted = this.quizState.submitted[qIdx];
+        const progressPct = ((qIdx + 1) / 10) * 100;
+
+        return `
+          <div class="max-w-3xl mx-auto space-y-6 py-2">
+            <!-- Progress & Timer Bar -->
+            <div class="glass-card p-4 rounded-2xl flex items-center justify-between gap-4">
+              <div class="flex-1 space-y-1.5">
+                <div class="flex justify-between text-xs font-bold text-gray-700">
+                  <span>QUESTION ${qIdx + 1} OF 10</span>
+                  <span class="text-teal">${Math.round(progressPct)}% COMPLETE</span>
+                </div>
+                <div class="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                  <div class="bg-teal h-full transition-all duration-300" style="width: ${progressPct}%"></div>
+                </div>
+              </div>
+
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gray-100 font-mono text-sm font-bold text-gray-700">
+                <i class="fa-regular fa-clock text-amber"></i>
+                <span id="quiz-timer">${this.formatDuration(this.quizState.elapsedSeconds)}</span>
+              </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-gray-200/80 space-y-6">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-100 pb-3">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-xs font-extrabold text-teal uppercase tracking-widest bg-teal-light px-3 py-1 rounded-lg">
+                    ${q.topic}
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase border ${
+                    q.difficulty === 'Basic'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : q.difficulty === 'Intermediate'
+                        ? 'bg-amber-light text-amber-dark border-amber/30'
+                        : 'bg-coral-light text-coral-dark border-coral/30'
+                  }">
+                    ${q.difficulty === 'Basic' ? '🟢' : q.difficulty === 'Intermediate' ? '🟡' : '🔴'} ${q.difficulty}
+                  </span>
+                </div>
+                <span class="text-xs font-semibold text-gray-400">Student: ${this.student.name || 'Anonymous'} (${this.student.section})</span>
+              </div>
+
+              <!-- Question Text -->
+              <div class="text-base sm:text-lg font-bold text-gray-900 leading-relaxed">
+                ${q.question}
+              </div>
+
+              <!-- Answer Choices -->
+              <div class="space-y-3">
+                ${q.options.map((opt, oIdx) => {
+                  let cardStyle = "border-gray-200 hover:border-teal/50 hover:bg-gray-50";
+                  let badgeStyle = "bg-gray-100 text-gray-600";
+                  const cleanText = cleanOptionLabel(opt);
+
+                  if (selectedOpt === oIdx) {
+                    cardStyle = "border-2 border-teal bg-teal-light/40 shadow-sm";
+                    badgeStyle = "bg-teal text-white font-bold";
+                  }
+
+                  if (isSubmitted) {
+                    if (oIdx === q.correct) {
+                      cardStyle = "border-2 border-teal bg-teal-light text-teal-dark font-bold";
+                      badgeStyle = "bg-teal text-white";
+                    } else if (selectedOpt === oIdx && selectedOpt !== q.correct) {
+                      cardStyle = "border-2 border-coral bg-coral-light text-coral-dark";
+                      badgeStyle = "bg-coral text-white";
                     }
-                ];
-            }
-
-            loadState() {
-                try {
-                    const saved = localStorage.getItem('thinklab_state_v2');
-                    if (saved) {
-                        const parsed = JSON.parse(saved);
-                        parsed.completedSteps = new Set(parsed.completedSteps || []);
-                        return { ...INITIAL_STATE, ...parsed };
-                    }
-                } catch(e) {
-                    console.error("Failed to load state", e);
-                }
-                return { ...INITIAL_STATE };
-            }
-
-            saveState() {
-                try {
-                    const toSave = {
-                        ...this.state,
-                        completedSteps: Array.from(this.state.completedSteps)
-                    };
-                    localStorage.setItem('thinklab_state_v2', JSON.stringify(toSave));
-                    const statusEl = document.getElementById('saveStatus');
-                    if (statusEl) {
-                        statusEl.style.opacity = '1';
-                        setTimeout(() => { statusEl.style.opacity = '0.4'; }, 1200);
-                    }
-                } catch(e) {
-                    console.error("Failed to save state", e);
-                }
-            }
-
-            promptResetModal() {
-                sound.playClick();
-                document.getElementById('resetModal').classList.remove('hidden');
-            }
-
-            closeResetModal() {
-                sound.playClick();
-                document.getElementById('resetModal').classList.add('hidden');
-            }
-
-            executeReset() {
-                sound.playClick();
-                localStorage.removeItem('thinklab_state_v2');
-                this.state = { ...INITIAL_STATE, completedSteps: new Set() };
-                document.getElementById('resetModal').classList.add('hidden');
-                this.navigate(0);
-            }
-
-            toggleSound() {
-                this.state.soundEnabled = !this.state.soundEnabled;
-                sound.enabled = this.state.soundEnabled;
-                const icon = document.getElementById('soundIcon');
-                if (icon) {
-                    icon.className = this.state.soundEnabled ? 'fa-solid fa-volume-high text-xs sm:text-sm' : 'fa-solid fa-volume-xmark text-red-400 text-xs sm:text-sm';
-                }
-                if (this.state.soundEnabled) sound.playClick();
-                this.saveState();
-            }
-
-            toggleMobileMenu() {
-                sound.playClick();
-                this.state.mobileMenuOpen = !this.state.mobileMenuOpen;
-                const drawer = document.getElementById('mobileDrawer');
-                if (drawer) {
-                    if (this.state.mobileMenuOpen) drawer.classList.remove('hidden');
-                    else drawer.classList.add('hidden');
-                }
-            }
-
-            setTheme(theme) {
-                document.documentElement.setAttribute('data-theme', theme);
-                const lightBtn = document.getElementById('themeBtnLight');
-                const darkBtn = document.getElementById('themeBtnDark');
-                
-                if (theme === 'dark') {
-                    darkBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold bg-violet-600 text-white shadow-sm';
-                    lightBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold text-muted hover:text-ink';
-                } else {
-                    lightBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold bg-violet-600 text-white shadow-sm';
-                    darkBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold text-muted hover:text-ink';
-                }
-                try { localStorage.setItem('thinklab_theme', theme); } catch(e){}
-            }
-
-            navigate(stepIndex) {
-                sound.playClick();
-                if (this.state.page > 0 && this.state.page <= 7) {
-                    this.state.completedSteps.add(this.state.page);
-                }
-                this.state.page = stepIndex;
-                this.state.mobileMenuOpen = false;
-                const drawer = document.getElementById('mobileDrawer');
-                if (drawer) drawer.classList.add('hidden');
-
-                this.saveState();
-                this.render();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-
-            markAnswer(key, val) {
-                sound.playClick();
-                this.state.answers[key] = val;
-                this.saveState();
-                this.render();
-            }
-
-            markQuizAnswer(choice) {
-                sound.playClick();
-                this.state.quizAnswers[this.state.quizIndex] = choice;
-                this.saveState();
-                this.render();
-            }
-
-            renderNav() {
-                const navEl = document.getElementById('stepNav');
-                const mobileNavEl = document.getElementById('mobileStepNav');
-
-                const generateNavHtml = (isMobile = false) => {
-                    let html = `
-                        <button onclick="app.navigate(0)" class="w-full text-left p-3 rounded-xl flex items-center justify-between transition-all border ${this.state.page === 0 ? 'bg-violet-600 text-white font-bold border-violet-500 shadow-md' : 'border-transparent text-slate-300 hover:bg-navy-800/80 hover:text-white'}">
-                            <span class="flex items-center gap-3 text-xs font-semibold">
-                                <i class="fa-solid fa-house text-xs w-4 text-center"></i> Overview
-                            </span>
-                            ${this.state.page === 0 ? '<i class="fa-solid fa-chevron-right text-xs text-peach-300"></i>' : ''}
-                        </button>
-                    `;
-
-                    STEP_NAMES.forEach((name, idx) => {
-                        const stepNum = idx + 1;
-                        const isActive = this.state.page === stepNum;
-                        const isDone = this.state.completedSteps.has(stepNum);
-
-                        let badgeHtml = '';
-                        if (isDone) {
-                            badgeHtml = `<span class="w-5 h-5 rounded-full bg-peach-400 text-navy-900 flex items-center justify-center text-[10px] font-extrabold flex-shrink-0"><i class="fa-solid fa-check"></i></span>`;
-                        } else if (isActive) {
-                            badgeHtml = `<span class="w-5 h-5 rounded-full bg-violet-500 text-white flex items-center justify-center text-[10px] font-bold pulse-active flex-shrink-0">${stepNum}</span>`;
-                        } else {
-                            badgeHtml = `<span class="w-5 h-5 rounded-full border border-slate-600 flex items-center justify-center text-[10px] font-mono text-slate-400 flex-shrink-0">${String(stepNum).padStart(2, '0')}</span>`;
-                        }
-
-                        html += `
-                            <button onclick="app.navigate(${stepNum})" class="w-full text-left p-2.5 rounded-xl flex items-center justify-between transition-all border ${isActive ? 'bg-violet-600 text-white font-bold border-violet-400 shadow-md' : 'border-transparent text-slate-300 hover:bg-navy-800/70 hover:text-white'}">
-                                <div class="flex items-center gap-2.5 min-w-0">
-                                    ${badgeHtml}
-                                    <span class="text-xs truncate ${isActive ? 'text-white font-bold' : 'text-slate-300'}">${stepNum}. ${name}</span>
-                                </div>
-                                ${isActive ? '<i class="fa-solid fa-chevron-right text-xs text-peach-300 flex-shrink-0 ml-1"></i>' : ''}
-                            </button>
-                        `;
-                    });
-
-                    return html;
-                };
-
-                if (navEl) navEl.innerHTML = generateNavHtml(false);
-                if (mobileNavEl) mobileNavEl.innerHTML = generateNavHtml(true);
-
-                // Update Header Counters
-                const completedCount = this.state.completedSteps.size;
-                const counterText = `${completedCount} / 7 Completed`;
-
-                const badgeCounter = document.getElementById('badgeCounter');
-                if (badgeCounter) badgeCounter.textContent = counterText;
-
-                const mobileProgressText = document.getElementById('mobileProgressText');
-                if (mobileProgressText) mobileProgressText.textContent = counterText;
-
-                const mobileBtnText = document.getElementById('mobileMenuBtnText');
-                if (mobileBtnText) {
-                    mobileBtnText.textContent = this.state.page === 0 ? 'Overview' : `Step ${this.state.page}/7`;
-                }
-
-                // Sidebar mini progress fill
-                const sidebarProgress = document.getElementById('sidebarProgressBar');
-                if (sidebarProgress) {
-                    sidebarProgress.style.width = `${Math.round((completedCount / 7) * 100)}%`;
-                }
-            }
-
-            renderHeaderProgress() {
-                const p = this.state.page;
-                document.getElementById('stepCounterText').textContent = `${String(Math.min(p, 7)).padStart(2, '0')} / 07`;
-                
-                const stageLabel = document.getElementById('stageLabel');
-                if (p === 0) stageLabel.textContent = 'OVERVIEW';
-                else if (p === 8) stageLabel.textContent = 'SIMULATION COMPLETED';
-                else stageLabel.textContent = STEP_NAMES[p - 1].toUpperCase();
-            }
-
-            render() {
-                this.renderNav();
-                this.renderHeaderProgress();
-
-                const screen = document.getElementById('screen');
-                const p = this.state.page;
-                let html = '';
-
-                if (p === 0) {
-                    html = `
-                        <div class="animate-fade-in space-y-8 py-2">
-                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-600 dark:text-violet-400 text-xs font-bold uppercase tracking-wider">
-                                <i class="fa-solid fa-lightbulb text-peach-500"></i> The Answer is Easy. The Thinking is Everything.
-                            </div>
-
-                            <div class="space-y-4">
-                                <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-ink leading-tight">
-                                    HOW TO GET STUDENTS TO THINK <br class="hidden sm:inline">
-                                    <span class="text-violet-600 dark:text-violet-400 underline decoration-peach-400 decoration-wavy underline-offset-8">
-                                        NOT JUST USE AI FOR ANSWERS
-                                    </span>
-                                </h1>
-                                <p class="text-base sm:text-lg text-muted max-w-2xl font-normal leading-relaxed">
-                                    An interactive 2-column simulation built for teachers and lecturers designing AI-resilient learning experiences. Select a section on the left sidebar to jump anywhere anytime.
-                                </p>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-                                <div class="p-5 rounded-2xl bg-surface border border-theme card-glow space-y-2">
-                                    <div class="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-300 flex items-center justify-center font-bold">
-                                        <i class="fa-solid fa-brain"></i>
-                                    </div>
-                                    <h3 class="font-bold text-ink text-sm sm:text-base">Spot Cognitive Friction</h3>
-                                    <p class="text-xs text-muted leading-relaxed">Identify when AI performs critical analytical work versus when it supports student mastery.</p>
-                                </div>
-                                <div class="p-5 rounded-2xl bg-surface border border-theme card-glow space-y-2">
-                                    <div class="w-10 h-10 rounded-xl bg-peach-100 dark:bg-amber-900/40 text-amber-600 dark:text-peach-300 flex items-center justify-center font-bold">
-                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                                    </div>
-                                    <h3 class="font-bold text-ink text-sm sm:text-base">Redesign Tasks</h3>
-                                    <p class="text-xs text-muted leading-relaxed">Transform traditional essay prompts into interactive tasks that mandate student justification.</p>
-                                </div>
-                                <div class="p-5 rounded-2xl bg-surface border border-theme card-glow space-y-2">
-                                    <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-300 flex items-center justify-center font-bold">
-                                        <i class="fa-solid fa-file-pen"></i>
-                                    </div>
-                                    <h3 class="font-bold text-ink text-sm sm:text-base">Actionable Takeaway</h3>
-                                    <p class="text-xs text-muted leading-relaxed">Walk away with a concrete, customized redesign for one of your upcoming assignments.</p>
-                                </div>
-                            </div>
-
-                            <div class="p-6 rounded-2xl bg-navy-900 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
-                                <div class="space-y-1 text-center sm:text-left">
-                                    <span class="text-xs text-peach-300 font-bold uppercase tracking-wider">Ready to begin?</span>
-                                    <h3 class="font-display font-bold text-lg sm:text-xl">5 Minutes to Shift Your AI Pedagogy</h3>
-                                </div>
-                                <button onclick="app.navigate(1)" class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-violet-600/30 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2">
-                                    <span>START MODULE 01</span>
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                else if (p === 1) {
-                    const ans = this.state.answers.first;
-                    const feedbackTexts = [
-                        "Reading and editing involve baseline mechanics, but this submission yields minimal evidence that the student grasped the underlying framework independently.",
-                        "Spot on balance! The student edited language, but the primary cognitive lifting was outsourced. We need visible proof of independent reasoning.",
-                        "AI use alone isn't inherently bad. The true issue is task structure: AI performed the evaluation while the student merely polished prose."
-                    ];
-
-                    html = `
-                        <div class="animate-fade-in space-y-6">
-                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-xs font-bold">
-                                01 · EXPERIENCE FIRST
-                            </div>
-
-                            <h2 class="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-ink leading-tight">
-                                A polished answer.<br>A hidden thinking gap?
-                            </h2>
-
-                            <!-- Scenario Card -->
-                            <div class="p-5 sm:p-6 rounded-2xl bg-surface border-l-4 border-violet-600 border-y border-r border-theme card-glow space-y-3">
-                                <span class="text-xs font-bold text-violet-600 dark:text-violet-400 uppercase tracking-wider">Classroom Scenario</span>
-                                <p class="text-sm sm:text-base text-ink leading-relaxed">
-                                    A lecturer asks university students to explain a complex theoretical model. One student prompts an AI assistant to generate the entire explanation. The student reads the AI output, rewords several phrases into their own voice, and submits the response.
-                                </p>
-                            </div>
-
-                            <div class="space-y-3">
-                                <h3 class="font-bold text-ink text-base sm:text-lg">Has meaningful student thinking occurred here?</h3>
-                                
-                                <div class="space-y-2.5">
-                                    ${[
-                                        'Yes — the student read, processed, and edited the text.',
-                                        'Partially — some superficial engagement occurred, but core cognitive work was outsourced.',
-                                        'No — any integration of AI completely invalidates thinking.'
-                                    ].map((optionText, idx) => `
-                                        <button onclick="app.markAnswer('first', ${idx})" class="choice-btn w-full text-left p-3.5 sm:p-4 rounded-xl border border-theme bg-surface hover:bg-surface-subtle flex items-center gap-3 sm:gap-4 ${ans === idx ? 'selected' : ''}">
-                                            <span class="letter-box w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-theme flex items-center justify-center font-mono text-xs font-bold text-muted flex-shrink-0">
-                                                ${['A', 'B', 'C'][idx]}
-                                            </span>
-                                            <span class="text-xs sm:text-sm font-medium leading-normal">${optionText}</span>
-                                        </button>
-                                    `).join('')}
-                                </div>
-                            </div>
-
-                            ${ans !== undefined ? `
-                                <div class="p-5 rounded-2xl bg-violet-500/10 border border-violet-500/30 animate-fade-in space-y-3">
-                                    <div class="flex items-center gap-2 text-violet-700 dark:text-violet-300 font-bold text-xs sm:text-sm">
-                                        <i class="fa-solid fa-circle-info"></i> Pedagogical Analysis
-                                    </div>
-                                    <p class="text-xs sm:text-sm text-ink leading-relaxed">${feedbackTexts[ans]}</p>
-                                </div>
-
-                                <div class="space-y-2 animate-fade-in">
-                                    <label class="block text-xs font-bold uppercase tracking-wider text-muted">
-                                        Identify the Action: What cognitive work did the STUDENT actually perform?
-                                    </label>
-                                    <textarea oninput="app.state.cognitive = this.value; app.saveState();" class="w-full p-3.5 rounded-xl border border-theme bg-surface text-ink text-xs sm:text-sm focus:ring-2 focus:ring-violet-500 focus:outline-none transition-all" rows="2" placeholder="e.g., The student only performed proofreading and rewording...">${this.state.cognitive}</textarea>
-                                </div>
-                            ` : ''}
-
-                            <div class="flex items-center justify-between pt-4 border-t border-theme">
-                                <button onclick="app.navigate(0)" class="px-4 py-2.5 rounded-xl border border-theme bg-surface text-ink hover:bg-surface-subtle text-xs font-bold transition-all">
-                                    ← Overview
-                                </button>
-                                <button onclick="app.navigate(2)" ${ans !== undefined ? '' : 'disabled'} class="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold transition-all shadow-md flex items-center gap-2">
-                                    <span>Next: Watch & Think</span>
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                else if (p === 2) {
-                    html = `
-                        <div class="animate-fade-in space-y-6">
-                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-xs font-bold">
-                                02 · WATCH & THINK
-                            </div>
-
-                            <h2 class="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-ink leading-tight">
-                                Fast answers. Slow down.<br>What is really being learned?
-                            </h2>
-
-                            <!-- TED Talk Card -->
-                            <div class="p-5 sm:p-6 rounded-2xl bg-surface border border-theme card-glow flex flex-col sm:flex-row items-center gap-5 sm:gap-6">
-                                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-red-600 text-white flex items-center justify-center text-2xl flex-shrink-0 shadow-lg shadow-red-600/30">
-                                    <i class="fa-brands fa-youtube"></i>
-                                </div>
-                                <div class="space-y-1 text-center sm:text-left flex-1">
-                                    <span class="text-[10px] font-bold text-red-500 uppercase tracking-widest">TEDNext Resource · Priya Lakhani</span>
-                                    <h3 class="font-bold text-ink text-sm sm:text-base">This is how kids should be learning with AI</h3>
-                                    <p class="text-xs text-muted">Priya Lakhani explores how AI can either foster deep critical thinking or replace student cognitive effort.</p>
-                                </div>
-                                <a href="https://www.ted.com/talks/priya_lakhani_this_is_how_kids_should_be_learning_with_ai" target="_blank" rel="noopener" class="px-4 py-2.5 rounded-xl bg-surface-subtle hover:bg-violet-600 hover:text-white border border-theme text-xs font-bold transition-all flex items-center gap-2 flex-shrink-0">
-                                    <span>Watch Talk</span>
-                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                                </a>
-                            </div>
-
-                            <!-- Note Taking Area -->
-                            <div class="space-y-2">
-                                <label class="block text-xs font-bold uppercase tracking-wider text-muted">
-                                    Key Reflection Note (Optional)
-                                </label>
-                                <textarea oninput="app.state.note = this.value; app.saveState();" class="w-full p-3.5 rounded-xl border border-theme bg-surface text-ink text-xs sm:text-sm focus:ring-2 focus:ring-violet-500 focus:outline-none transition-all" rows="3" placeholder="Capture one takeaway about speed vs deep understanding…">${this.state.note}</textarea>
-                                <p class="text-[11px] text-muted">Note: You can proceed directly during quick webinar runs.</p>
-                            </div>
-
-                            <div class="flex items-center justify-between pt-4 border-t border-theme">
-                                <button onclick="app.navigate(1)" class="px-4 py-2.5 rounded-xl border border-theme bg-surface text-ink hover:bg-surface-subtle text-xs font-bold transition-all">
-                                    ← Previous
-                                </button>
-                                <button onclick="app.navigate(3)" class="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold transition-all shadow-md flex items-center gap-2">
-                                    <span>Next: The Key Idea</span>
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                else if (p === 3) {
-                    html = `
-                        <div class="animate-fade-in space-y-6">
-                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-xs font-bold">
-                                03 · THE KEY IDEA
-                            </div>
-
-                            <h2 class="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-ink leading-tight">
-                                Who is doing the cognitive work?
-                            </h2>
-
-                            <!-- Comparison Cards Grid -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <!-- Replaces -->
-                                <div class="p-5 rounded-2xl bg-surface border border-red-500/30 card-glow space-y-3">
-                                    <div class="flex items-center justify-between">
-                                        <h3 class="font-bold text-red-600 dark:text-red-400 text-sm uppercase tracking-wider flex items-center gap-1.5">
-                                            <i class="fa-solid fa-xmark-circle"></i> AI Replaces Thinking
-                                        </h3>
-                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-500">Low Friction</span>
-                                    </div>
-                                    <p class="text-xs text-muted">Student delegates core analytical tasks directly to AI:</p>
-                                    <div class="flex flex-wrap gap-1.5">
-                                        ${['ANALYZE', 'DECIDE', 'JUSTIFY', 'GENERATE FINAL ANSWER'].map(v => `<span class="px-2 py-0.5 rounded bg-red-500/10 text-red-600 dark:text-red-300 font-mono text-[10px] font-bold">${v}</span>`).join('')}
-                                    </div>
-                                    <p class="text-xs text-muted pt-2 border-t border-theme">Student only performs passive surface edits:</p>
-                                    <div class="flex flex-wrap gap-1.5">
-                                        ${['COPY', 'REWORD', 'SUBMIT'].map(v => `<span class="px-2 py-0.5 rounded bg-surface-subtle text-muted border border-theme font-mono text-[10px]">${v}</span>`).join('')}
-                                    </div>
-                                </div>
-
-                                <!-- Supports -->
-                                <div class="p-5 rounded-2xl bg-navy-900 text-white border border-violet-500/30 shadow-xl space-y-3">
-                                    <div class="flex items-center justify-between">
-                                        <h3 class="font-bold text-peach-400 text-sm uppercase tracking-wider flex items-center gap-1.5">
-                                            <i class="fa-solid fa-check-circle"></i> AI Supports Thinking
-                                        </h3>
-                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-peach-400/20 text-peach-300">High Learning</span>
-                                    </div>
-                                    <p class="text-xs text-slate-300">AI serves as a sparring partner, scaffolding possibilities:</p>
-                                    <div class="flex flex-wrap gap-1.5">
-                                        ${['EXPLORE', 'CRITIQUE', 'TEST ASSUMPTIONS', 'COMPARE OPTIONS'].map(v => `<span class="px-2 py-0.5 rounded bg-violet-600/40 border border-violet-500/40 text-violet-200 font-mono text-[10px] font-bold">${v}</span>`).join('')}
-                                    </div>
-                                    <p class="text-xs text-slate-300 pt-2 border-t border-navy-700">Student retains mandatory cognitive ownership:</p>
-                                    <div class="flex flex-wrap gap-1.5">
-                                        ${['EVALUATE', 'DECIDE', 'JUSTIFY', 'REFLECT'].map(v => `<span class="px-2 py-0.5 rounded bg-peach-400 text-navy-900 font-mono text-[10px] font-bold">${v}</span>`).join('')}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Interactive Key Callout -->
-                            <div class="p-5 rounded-2xl bg-surface border-l-4 border-peach-400 border-y border-r border-theme space-y-3">
-                                <p class="text-sm sm:text-base font-bold text-ink">
-                                    "AI integration isn't the core pedagogical question. The true question is: <span class="text-violet-600 dark:text-violet-400">WHO IS DOING THE COGNITIVE WORK?</span>"
-                                </p>
-                                <button onclick="app.state.compared = true; sound.playSuccess(); app.saveState(); app.render();" class="px-4 py-2 rounded-xl bg-surface-subtle hover:bg-violet-600 hover:text-white border border-theme text-xs font-bold transition-all flex items-center gap-2">
-                                    <span>${this.state.compared ? '✓ Justify Decision Activated' : 'Click to Highlight Core Verb: JUSTIFY A DECISION'}</span>
-                                </button>
-                                ${this.state.compared ? `
-                                    <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium animate-fade-in">
-                                        <i class="fa-solid fa-sparkles"></i> Requiring justification forces students to show their underlying mental model!
-                                    </p>
-                                ` : ''}
-                            </div>
-
-                            <div class="flex items-center justify-between pt-4 border-t border-theme">
-                                <button onclick="app.navigate(2)" class="px-4 py-2.5 rounded-xl border border-theme bg-surface text-ink hover:bg-surface-subtle text-xs font-bold transition-all">
-                                    ← Previous
-                                </button>
-                                <button onclick="app.navigate(4)" ${this.state.compared ? '' : 'disabled'} class="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold transition-all shadow-md flex items-center gap-2">
-                                    <span>Next: Apply Thinking</span>
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                else if (p === 4) {
-                    const ans = this.state.answers.apply;
-                    html = `
-                        <div class="animate-fade-in space-y-6">
-                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-xs font-bold">
-                                04 · APPLY YOUR THINKING
-                            </div>
-
-                            <h2 class="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-ink leading-tight">
-                                AI sparked possibilities.<br>The student owned the decision.
-                            </h2>
-
-                            <!-- Scenario breakdown -->
-                            <div class="p-5 rounded-2xl bg-surface border border-theme card-glow space-y-3">
-                                <span class="text-xs font-bold text-violet-600 dark:text-violet-400 uppercase tracking-wider">Classroom Case Study</span>
-                                <p class="text-xs sm:text-sm text-ink leading-relaxed">
-                                    Students must evaluate three policy solutions to urban water scarcity. One student prompts AI to generate 5 innovative solutions, then:
-                                </p>
-                                <ul class="space-y-1.5 text-xs text-muted pl-1">
-                                    <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-500"></i> Audits the underlying assumptions of each AI proposal</li>
-                                    <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-500"></i> Cross-references claims against peer-reviewed water data</li>
-                                    <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-500"></i> Discards 2 proposals due to severe local feasibility flaws</li>
-                                    <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-500"></i> Synthesizes ideas and writes a defended policy recommendation</li>
-                                </ul>
-                            </div>
-
-                            <div class="space-y-3">
-                                <h3 class="font-bold text-ink text-sm sm:text-base">Is AI replacing or supporting thinking in this instance?</h3>
-                                <div class="space-y-2.5">
-                                    ${[
-                                        'Replacing — the initial brainstorming task was generated by AI.',
-                                        'Supporting — AI generated raw material; student executed critical evaluation and synthesis.',
-                                        'Neither — students must generate 100% of initial ideas unassisted.'
-                                    ].map((opt, idx) => `
-                                        <button onclick="app.markAnswer('apply', ${idx})" class="choice-btn w-full text-left p-3.5 rounded-xl border border-theme bg-surface hover:bg-surface-subtle flex items-center gap-3.5 ${ans === idx ? 'selected' : ''}">
-                                            <span class="letter-box w-7 h-7 rounded-lg border border-theme flex items-center justify-center font-mono text-xs font-bold text-muted flex-shrink-0">${['A', 'B', 'C'][idx]}</span>
-                                            <span class="text-xs sm:text-sm font-medium leading-normal">${opt}</span>
-                                        </button>
-                                    `).join('')}
-                                </div>
-                            </div>
-
-                            ${ans !== undefined ? `
-                                <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 animate-fade-in space-y-1.5">
-                                    <div class="font-bold text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm">
-                                        <i class="fa-solid fa-circle-check"></i> Correct Insight!
-                                    </div>
-                                    <p class="text-xs text-ink leading-relaxed">
-                                        Generating raw ideas is low-friction. The higher-order Bloom’s verbs (auditing, comparing, discarding, justifying) were entirely commanded by the student.
-                                    </p>
-                                </div>
-                            ` : ''}
-
-                            <div class="flex items-center justify-between pt-4 border-t border-theme">
-                                <button onclick="app.navigate(3)" class="px-4 py-2.5 rounded-xl border border-theme bg-surface text-ink hover:bg-surface-subtle text-xs font-bold transition-all">
-                                    ← Previous
-                                </button>
-                                <button onclick="app.navigate(5)" ${ans !== undefined ? '' : 'disabled'} class="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold transition-all shadow-md flex items-center gap-2">
-                                    <span>Next: Redesign Challenge</span>
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                else if (p === 5) {
-                    const ans = this.state.answers.redesign;
-                    html = `
-                        <div class="animate-fade-in space-y-6">
-                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-xs font-bold">
-                                05 · REDESIGN CHALLENGE
-                            </div>
-
-                            <h2 class="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-ink leading-tight">
-                                Same topic.<br>A whole new level of thinking.
-                            </h2>
-
-                            <!-- Conventional Task Card -->
-                            <div class="p-5 rounded-2xl bg-surface-subtle border border-theme space-y-1.5">
-                                <span class="text-xs font-bold text-muted uppercase tracking-wider">The Conventional Task</span>
-                                <p class="text-xs sm:text-sm font-semibold text-ink">"Write a 1,000-word essay explaining the causes and economic impacts of climate change."</p>
-                            </div>
-
-                            <div class="space-y-3">
-                                <h3 class="font-bold text-ink text-sm sm:text-base">How would you redesign this task to guarantee student cognitive work?</h3>
-                                <div class="space-y-2.5">
-                                    ${[
-                                        'Require an AI draft, 5 academic references, and an AI-use disclosure statement.',
-                                        'Require two AI drafts, a combined student text, and a list of changes made.',
-                                        'Ask students to compare two AI models, verify claims against real data, challenge one key assumption, and defend their conclusion in a brief verbal check.'
-                                    ].map((opt, idx) => `
-                                        <button onclick="app.markAnswer('redesign', ${idx})" class="choice-btn w-full text-left p-3.5 rounded-xl border border-theme bg-surface hover:bg-surface-subtle flex items-center gap-3.5 ${ans === idx ? 'selected' : ''}">
-                                            <span class="letter-box w-7 h-7 rounded-lg border border-theme flex items-center justify-center font-mono text-xs font-bold text-muted flex-shrink-0">${['A', 'B', 'C'][idx]}</span>
-                                            <span class="text-xs sm:text-sm font-medium leading-normal">${opt}</span>
-                                        </button>
-                                    `).join('')}
-                                </div>
-                            </div>
-
-                            ${ans !== undefined ? `
-                                <div class="p-4 rounded-2xl bg-violet-500/10 border border-violet-500/30 animate-fade-in space-y-2">
-                                    <div class="font-bold text-violet-700 dark:text-violet-300 text-xs sm:text-sm">
-                                        <i class="fa-solid fa-lightbulb"></i> Redesign Strategy Breakdown
-                                    </div>
-                                    <p class="text-xs text-ink leading-relaxed">
-                                        Option C forces student critical evaluation. Notice the structural shift:
-                                    </p>
-                                    <div class="flex flex-wrap gap-1.5 pt-1">
-                                        <span class="px-2.5 py-0.5 rounded bg-violet-600 text-white font-mono text-[11px] font-bold">COMPARE</span>
-                                        <span class="px-2.5 py-0.5 rounded bg-violet-600 text-white font-mono text-[11px] font-bold">VERIFY</span>
-                                        <span class="px-2.5 py-0.5 rounded bg-violet-600 text-white font-mono text-[11px] font-bold">CHALLENGE</span>
-                                        <span class="px-2.5 py-0.5 rounded bg-violet-600 text-white font-mono text-[11px] font-bold">DEFEND</span>
-                                    </div>
-                                </div>
-                            ` : ''}
-
-                            <div class="flex items-center justify-between pt-4 border-t border-theme">
-                                <button onclick="app.navigate(4)" class="px-4 py-2.5 rounded-xl border border-theme bg-surface text-ink hover:bg-surface-subtle text-xs font-bold transition-all">
-                                    ← Previous
-                                </button>
-                                <button onclick="app.navigate(6)" ${ans !== undefined ? '' : 'disabled'} class="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold transition-all shadow-md flex items-center gap-2">
-                                    <span>Next: Check Understanding</span>
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                else if (p === 6) {
-                    const qIdx = this.state.quizIndex;
-                    const curQuiz = this.quizData[qIdx];
-                    const chosen = this.state.quizAnswers[qIdx];
-
-                    html = `
-                        <div class="animate-fade-in space-y-6">
-                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-xs font-bold">
-                                06 · CHECK YOUR UNDERSTANDING
-                            </div>
-
-                            <h2 class="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-ink leading-tight">
-                                Spot the Cognitive Location
-                            </h2>
-
-                            <!-- Quiz Step Indicator -->
-                            <div class="flex items-center gap-2">
-                                ${[0, 1, 2].map(i => `
-                                    <div class="h-2 flex-1 rounded-full transition-all ${i === qIdx ? 'bg-violet-600' : i < qIdx ? 'bg-peach-400' : 'bg-surface-subtle border border-theme'}"></div>
-                                `).join('')}
-                            </div>
-
-                            <!-- Question Card -->
-                            <div class="p-5 rounded-2xl bg-surface border border-theme card-glow space-y-2">
-                                <span class="text-xs font-bold text-muted uppercase tracking-wider">Scenario ${qIdx + 1} of 3</span>
-                                <p class="text-xs sm:text-sm font-medium text-ink leading-relaxed">${curQuiz.text}</p>
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                ${['AI REPLACES THINKING', 'AI SUPPORTS THINKING', 'AI DEEPENS THINKING'].map((label, idx) => `
-                                    <button onclick="app.markQuizAnswer(${idx})" class="p-3.5 rounded-xl border border-theme text-xs font-bold text-center transition-all ${chosen === idx ? 'bg-violet-600 text-white shadow-lg' : 'bg-surface hover:bg-surface-subtle text-ink'}">
-                                        ${label}
-                                    </button>
-                                `).join('')}
-                            </div>
-
-                            ${chosen !== undefined ? `
-                                <div class="p-4 rounded-2xl bg-surface-subtle border border-theme animate-fade-in space-y-1.5">
-                                    <div class="flex items-center gap-2 text-xs font-bold ${chosen === curQuiz.answer ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}">
-                                        <i class="fa-solid fa-circle-info"></i>
-                                        ${chosen === curQuiz.answer ? 'Accurate Classification!' : 'Alternative Perspective:'} ${curQuiz.title}
-                                    </div>
-                                    <p class="text-xs text-muted leading-relaxed">${curQuiz.why}</p>
-                                </div>
-                            ` : ''}
-
-                            <div class="flex items-center justify-between pt-4 border-t border-theme">
-                                <button onclick="if(app.state.quizIndex > 0) { app.state.quizIndex--; app.render(); } else app.navigate(5);" class="px-4 py-2.5 rounded-xl border border-theme bg-surface text-ink hover:bg-surface-subtle text-xs font-bold transition-all">
-                                    ← Back
-                                </button>
-                                
-                                ${qIdx < 2 ? `
-                                    <button onclick="app.state.quizIndex++; app.render();" ${chosen !== undefined ? '' : 'disabled'} class="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-40 text-white text-xs font-bold transition-all flex items-center gap-2">
-                                        <span>Next Scenario</span>
-                                        <i class="fa-solid fa-arrow-right"></i>
-                                    </button>
-                                ` : `
-                                    <button onclick="app.navigate(7)" ${chosen !== undefined ? '' : 'disabled'} class="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-40 text-white text-xs font-bold transition-all flex items-center gap-2">
-                                        <span>Next: Reflect & Takeaway</span>
-                                        <i class="fa-solid fa-arrow-right"></i>
-                                    </button>
-                                `}
-                            </div>
-                        </div>
-                    `;
-                }
-
-                else if (p === 7) {
-                    const isReady = this.state.work.trim().length > 0 && this.state.change.trim().length > 0;
-                    html = `
-                        <div class="animate-fade-in space-y-6">
-                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-xs font-bold">
-                                07 · REFLECT & TAKEAWAY
-                            </div>
-
-                            <h2 class="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-ink leading-tight">
-                                Your Next Lesson.<br>Your Move.
-                            </h2>
-
-                            <p class="text-xs sm:text-sm text-muted">Select ONE specific assignment you currently assign to your students and prepare its pedagogical upgrade.</p>
-
-                            <div class="space-y-4">
-                                <div class="space-y-2">
-                                    <label class="block text-xs font-bold uppercase tracking-wider text-muted">
-                                        1. What cognitive work do you want the STUDENT to perform independently?
-                                    </label>
-                                    <textarea oninput="app.state.work = this.value; app.saveState(); app.render();" class="w-full p-3.5 rounded-xl border border-theme bg-surface text-ink text-xs sm:text-sm focus:ring-2 focus:ring-violet-500 focus:outline-none transition-all" rows="3" placeholder="e.g., In my Business Strategy course, I want students to justify why they picked one market expansion over another based on regional data...">${this.state.work}</textarea>
-                                </div>
-
-                                <div class="space-y-2">
-                                    <label class="block text-xs font-bold uppercase tracking-wider text-muted">
-                                        2. What ONE structural change will you make to force visible reasoning?
-                                    </label>
-                                    <textarea oninput="app.state.change = this.value; app.saveState(); app.render();" class="w-full p-3.5 rounded-xl border border-theme bg-surface text-ink text-xs sm:text-sm focus:ring-2 focus:ring-violet-500 focus:outline-none transition-all" rows="3" placeholder="e.g., I will ask students to generate 3 AI strategies, identify 2 hidden flaws in each, and submit a 2-minute video defending their final choice...">${this.state.change}</textarea>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center justify-between pt-4 border-t border-theme">
-                                <button onclick="app.navigate(6)" class="px-4 py-2.5 rounded-xl border border-theme bg-surface text-ink hover:bg-surface-subtle text-xs font-bold transition-all">
-                                    ← Previous
-                                </button>
-                                <button onclick="sound.playFanfare(); app.state.submitted = true; app.navigate(8);" ${isReady ? '' : 'disabled'} class="px-7 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-40 text-white text-xs font-bold transition-all shadow-lg flex items-center gap-2">
-                                    <span>COMPLETE SIMULATION</span>
-                                    <i class="fa-solid fa-flag-checkered"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                else if (p === 8) {
-                    html = `
-                        <div class="animate-fade-in space-y-6 text-center sm:text-left py-2">
-                            <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
-
-                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-peach-400/20 text-peach-500 dark:text-peach-300 text-xs font-bold border border-peach-400/30">
-                                <i class="fa-solid fa-trophy"></i> SIMULATION COMPLETED
-                            </div>
-
-                            <div class="space-y-2">
-                                <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-ink leading-tight">
-                                    Keep the cognitive work where the learning happens.
-                                </h1>
-                                <p class="text-xs sm:text-sm text-muted max-w-2xl leading-relaxed">
-                                    AI can generate text. AI can synthesize options. But as educators, we intentionally design who evaluates, who decides, and who justifies.
-                                </p>
-                            </div>
-
-                            <!-- Takeaway Summary Certificate Card -->
-                            <div class="p-5 sm:p-6 rounded-2xl bg-navy-900 text-white shadow-2xl border border-navy-700 space-y-5 text-left">
-                                <div class="flex items-center justify-between border-b border-navy-800 pb-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl bg-peach-400 text-navy-900 flex items-center justify-center font-bold font-display text-base">
-                                            TL
-                                        </div>
-                                        <div>
-                                            <h3 class="font-bold text-white text-sm sm:text-base">Your Pedagogical Action Plan</h3>
-                                            <p class="text-[11px] text-slate-400">THINK / LAB Educator Commitment</p>
-                                        </div>
-                                    </div>
-                                    <span class="text-[10px] font-mono text-peach-300 bg-navy-800 px-2.5 py-0.5 rounded-full border border-navy-700">VERIFIED</span>
-                                </div>
-
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                                    <div class="space-y-1 p-3.5 rounded-xl bg-navy-800/50 border border-navy-700">
-                                        <span class="text-peach-300 font-bold uppercase tracking-wider text-[10px]">Target Cognitive Work</span>
-                                        <p class="text-slate-200 text-xs sm:text-sm font-medium leading-relaxed">${this.state.work || "Not specified"}</p>
-                                    </div>
-                                    <div class="space-y-1 p-3.5 rounded-xl bg-navy-800/50 border border-navy-700">
-                                        <span class="text-peach-300 font-bold uppercase tracking-wider text-[10px]">Pedagogical Redesign</span>
-                                        <p class="text-slate-200 text-xs sm:text-sm font-medium leading-relaxed">${this.state.change || "Not specified"}</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-navy-800">
-                                    <div class="flex items-center gap-2 text-xs text-slate-400">
-                                        <i class="fa-solid fa-quote-left text-peach-400"></i>
-                                        <span>Design learning around protecting the <strong>THINKING</strong>.</span>
-                                    </div>
-                                    <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-peach-400 hover:bg-peach-300 text-navy-900 font-bold text-xs transition-all flex items-center gap-2 shadow-md">
-                                        <i class="fa-solid fa-print"></i>
-                                        <span>Print Action Summary</span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
-                                <button onclick="app.promptResetModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-theme bg-surface text-ink hover:bg-surface-subtle text-xs font-bold transition-all flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-rotate-left"></i>
-                                    <span>Restart Simulation</span>
-                                </button>
-                                <button onclick="app.navigate(7)" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-theme bg-surface text-ink hover:bg-surface-subtle text-xs font-bold transition-all flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                    <span>Edit Reflection</span>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                screen.innerHTML = html;
-                this.attachPostRenderEffects();
-            }
-
-            attachPostRenderEffects() {
-                if (this.state.page === 8) {
-                    this.triggerConfetti();
-                }
-            }
-
-            triggerConfetti() {
-                const canvas = document.getElementById('confettiCanvas');
-                if (!canvas) return;
-                const ctx = canvas.getContext('2d');
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-
-                const particles = Array.from({ length: 65 }, () => ({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height - canvas.height,
-                    size: Math.random() * 7 + 3,
-                    color: ['#753bbd', '#ffd19a', '#8b5cf6', '#10b981', '#f43f5e'][Math.floor(Math.random() * 5)],
-                    speedY: Math.random() * 2.5 + 2,
-                    speedX: Math.random() * 2 - 1
-                }));
-
-                function renderParticles() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    particles.forEach(p => {
-                        p.y += p.speedY;
-                        p.x += p.speedX;
-                        ctx.fillStyle = p.color;
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                        ctx.fill();
-                    });
-                    if (particles.some(p => p.y < canvas.height)) {
-                        requestAnimationFrame(renderParticles);
-                    }
-                }
-                renderParticles();
-            }
+                  }
+
+                  return `
+                    <button onclick="app.selectOption(${oIdx})" ${isSubmitted ? 'disabled' : ''} class="w-full text-left p-4 rounded-2xl border transition-all flex items-center gap-3 ${cardStyle}">
+                      <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-mono shrink-0 ${badgeStyle}">
+                        ${String.fromCharCode(65 + oIdx)}
+                      </div>
+                      <div class="text-sm font-medium leading-normal flex-1">
+                        ${cleanText}
+                      </div>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+
+              <!-- IMMEDIATE FEEDBACK DISPLAY AFTER SUBMISSION -->
+              ${isSubmitted ? `
+                <div class="mt-6 pt-6 border-t border-gray-200 space-y-4 animate-fadeIn">
+                  ${selectedOpt === q.correct ? `
+                    <div class="p-4 rounded-2xl bg-teal-light border border-teal/30 text-teal-dark flex items-center gap-3">
+                      <div class="w-9 h-9 rounded-xl bg-teal text-white flex items-center justify-center text-lg font-bold">✓</div>
+                      <div>
+                        <h4 class="font-bold text-sm">CORRECT! Excellent logic.</h4>
+                        <p class="text-xs text-teal/80">You selected Option ${String.fromCharCode(65 + selectedOpt)}.</p>
+                      </div>
+                    </div>
+                  ` : `
+                    <div class="p-4 rounded-2xl bg-coral-light border border-coral/30 text-coral-dark flex items-center gap-3">
+                      <div class="w-9 h-9 rounded-xl bg-coral text-white flex items-center justify-center text-lg font-bold">✕</div>
+                      <div>
+                        <h4 class="font-bold text-sm">NOT QUITE</h4>
+                        <p class="text-xs text-coral-dark/80">Correct Answer: <b>Option ${String.fromCharCode(65 + q.correct)}</b></p>
+                      </div>
+                    </div>
+                  `}
+
+                  <!-- Detailed Mathematical Explanation Card -->
+                  <div class="bg-gray-50 rounded-2xl p-5 border border-gray-200 space-y-3 text-xs text-gray-700">
+                    <div>
+                      <span class="font-extrabold text-teal uppercase tracking-wider block mb-1">WHY?</span>
+                      <p>${q.why}</p>
+                    </div>
+
+                    <div>
+                      <span class="font-extrabold text-teal uppercase tracking-wider block mb-1">WORKING:</span>
+                      <div class="bg-white p-3 rounded-xl border border-gray-200 font-mono text-center overflow-x-auto">
+                        ${q.working}
+                      </div>
+                    </div>
+
+                    <div>
+                      <span class="font-extrabold text-coral uppercase tracking-wider block mb-1">COMMON ERROR:</span>
+                      <p class="text-gray-600">${q.commonError}</p>
+                    </div>
+
+                    <div class="pt-2 border-t border-gray-200">
+                      <span class="font-extrabold text-amber-dark uppercase tracking-wider block mb-1">KEY TAKEAWAY:</span>
+                      <p class="font-semibold text-gray-800">${q.keyTakeaway}</p>
+                    </div>
+                  </div>
+                </div>
+              ` : ''}
+
+              <!-- Bottom Controls -->
+              <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                <button onclick="app.prevQuestion()" ${qIdx === 0 ? 'disabled' : ''} class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-bold text-xs hover:bg-gray-100 disabled:opacity-40">
+                  <i class="fa-solid fa-arrow-left mr-1"></i> BACK
+                </button>
+
+                ${!isSubmitted ? `
+                  <button onclick="app.submitCurrentAnswer()" ${selectedOpt === null ? 'disabled' : ''} class="px-7 py-3 rounded-xl bg-teal hover:bg-teal-dark text-white font-bold text-xs shadow-md shadow-teal/20 disabled:opacity-40">
+                    SUBMIT ANSWER
+                  </button>
+                ` : `
+                  <button onclick="app.nextQuestion()" class="px-7 py-3 rounded-xl bg-coral hover:bg-coral-dark text-white font-bold text-xs shadow-md shadow-coral/20 flex items-center gap-2">
+                    <span>${qIdx === 9 ? 'FINISH CHALLENGE' : 'NEXT QUESTION'}</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // ----------------------------------------------------------------
+      // FINAL RESULTS DASHBOARD
+      // ----------------------------------------------------------------
+      renderResultsScreen() {
+        const total = 10;
+        let score = 0;
+        this.quizState.answers.forEach((ans, i) => {
+          if (ans === QUESTION_BANK[i].correct) score++;
+        });
+
+        const pct = Math.round((score / total) * 100);
+
+        const difficultyStats = ["Basic", "Intermediate", "Challenging"].map(level => {
+          const indices = QUESTION_BANK
+            .map((q, i) => q.difficulty === level ? i : -1)
+            .filter(i => i !== -1);
+          const correct = indices.filter(i => this.quizState.answers[i] === QUESTION_BANK[i].correct).length;
+          const count = indices.length;
+          const percentage = count ? Math.round((correct / count) * 100) : 0;
+          return { level, correct, count, percentage };
+        });
+
+        let bandTitle = "REVISION RECOMMENDED";
+        let bandColor = "text-coral bg-coral-light border-coral/30";
+        if (score >= 9) {
+          bandTitle = "MATRIX MASTER";
+          bandColor = "text-teal bg-teal-light border-teal/30";
+        } else if (score >= 7) {
+          bandTitle = "SYSTEM SOLVER";
+          bandColor = "text-amber-dark bg-amber-light border-amber/30";
+        } else if (score >= 5) {
+          bandTitle = "DEVELOPING";
+          bandColor = "text-amber-dark bg-amber-light border-amber/30";
         }
 
-        let app;
-        window.onload = function() {
-            app = new App();
-            const savedTheme = localStorage.getItem('thinklab_theme') || 'light';
-            app.setTheme(savedTheme);
-            app.render();
+        return `
+          <div class="max-w-2xl mx-auto space-y-6 py-4 text-center">
+            <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-teal/20 space-y-6">
+              <div class="w-20 h-20 rounded-3xl bg-teal-light text-teal mx-auto flex items-center justify-center text-3xl font-black shadow-inner">
+                <i class="fa-solid fa-award"></i>
+              </div>
+
+              <div>
+                <span class="inline-block px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase border ${bandColor} mb-2">
+                  ${bandTitle}
+                </span>
+                <h2 class="text-3xl font-black text-gray-900 tracking-tight">Challenge Completed!</h2>
+                <p class="text-xs text-gray-500 font-medium">Student: ${this.student.name} • Section ${this.student.section}</p>
+              </div>
+
+              <!-- Score KPI -->
+              <div class="bg-gray-50 rounded-2xl p-6 border border-gray-200 max-w-sm mx-auto space-y-1">
+                <div class="text-5xl font-black text-teal tracking-tight">${score} / 10</div>
+                <div class="text-sm font-bold text-gray-600">${pct}% ACCURACY</div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-3 text-xs">
+                <div class="p-3 rounded-xl bg-teal-light text-teal-dark font-bold">
+                  <div class="text-lg font-black">${score}</div>
+                  <div>Correct</div>
+                </div>
+                <div class="p-3 rounded-xl bg-coral-light text-coral-dark font-bold">
+                  <div class="text-lg font-black">${10 - score}</div>
+                  <div>Incorrect</div>
+                </div>
+                <div class="p-3 rounded-xl bg-amber-light text-amber-dark font-bold">
+                  <div class="text-lg font-black">${this.formatDuration(this.quizState.elapsedSeconds)}</div>
+                  <div>Completion Time</div>
+                </div>
+              </div>
+
+              <div class="pt-4 border-t border-gray-100 text-left">
+                <h3 class="text-sm font-black text-gray-900 mb-3 text-center">Performance by Difficulty</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  ${difficultyStats.map(stat => {
+                    const style = stat.level === 'Basic'
+                      ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                      : stat.level === 'Intermediate'
+                        ? 'bg-amber-light text-amber-dark border-amber/30'
+                        : 'bg-coral-light text-coral-dark border-coral/30';
+                    const icon = stat.level === 'Basic' ? '🟢' : stat.level === 'Intermediate' ? '🟡' : '🔴';
+                    return `
+                      <div class="p-4 rounded-2xl border ${style}">
+                        <div class="text-xs font-black uppercase tracking-wider">${icon} ${stat.level}</div>
+                        <div class="mt-1 text-xl font-black">${stat.correct}/${stat.count}</div>
+                        <div class="text-xs font-bold">${stat.percentage}%</div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-gray-100">
+                <button onclick="app.navigateTo('review')" class="py-3.5 rounded-xl bg-teal hover:bg-teal-dark text-white font-bold text-xs shadow-md shadow-teal/20 flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-book-open"></i>
+                  <span>REVIEW ANSWERS</span>
+                </button>
+
+                <button onclick="app.showRegistrationModal()" class="py-3.5 rounded-xl bg-amber hover:bg-amber-dark text-white font-bold text-xs shadow-md shadow-amber/20 flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-rotate-right"></i>
+                  <span>TRY AGAIN</span>
+                </button>
+              </div>
+
+              <button onclick="app.navigateTo('landing')" class="text-xs font-bold text-gray-500 hover:text-gray-800 underline block mx-auto pt-2">
+                Return to Home Screen
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      // ----------------------------------------------------------------
+      // REVIEW ANSWERS VIEW
+      // ----------------------------------------------------------------
+      renderReviewScreen() {
+        return `
+          <div class="max-w-3xl mx-auto space-y-6 py-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-black text-gray-900 tracking-tight">Review Solutions & Feedback</h2>
+                <p class="text-xs text-gray-500 font-medium">Detailed explanations for all 10 challenge questions</p>
+              </div>
+              <button onclick="app.navigateTo('results')" class="px-4 py-2 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-xs">
+                Back to Results
+              </button>
+            </div>
+
+            <div class="space-y-6">
+              ${QUESTION_BANK.map((q, i) => {
+                const userAns = this.quizState.answers[i];
+                const isCorrect = userAns === q.correct;
+
+                return `
+                  <div class="bg-white rounded-3xl p-6 shadow-md border ${isCorrect ? 'border-teal/30' : 'border-coral/30'} space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-gray-100 pb-3">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-xs font-bold text-gray-500">QUESTION ${i + 1}</span>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-black tracking-wider uppercase border ${
+                          q.difficulty === 'Basic'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : q.difficulty === 'Intermediate'
+                              ? 'bg-amber-light text-amber-dark border-amber/30'
+                              : 'bg-coral-light text-coral-dark border-coral/30'
+                        }">
+                          ${q.difficulty === 'Basic' ? '🟢' : q.difficulty === 'Intermediate' ? '🟡' : '🔴'} ${q.difficulty}
+                        </span>
+                        <span class="text-[10px] font-extrabold text-teal uppercase tracking-wider">${q.topic}</span>
+                      </div>
+                      <span class="px-3 py-1 rounded-full text-xs font-extrabold ${isCorrect ? 'bg-teal-light text-teal' : 'bg-coral-light text-coral'}">
+                        ${isCorrect ? '✓ CORRECT' : '✕ INCORRECT'}
+                      </span>
+                    </div>
+
+                    <div class="font-bold text-gray-900 text-sm">
+                      ${q.question}
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                      <div class="p-3 rounded-xl ${isCorrect ? 'bg-teal-light/50 border border-teal/20' : 'bg-coral-light/50 border border-coral/20'}">
+                        <span class="font-bold block text-gray-500">Your Answer:</span>
+                        <span class="font-semibold">${userAns !== null ? cleanOptionLabel(q.options[userAns]) : 'Not Answered'}</span>
+                      </div>
+                      <div class="p-3 rounded-xl bg-teal-light/50 border border-teal/20">
+                        <span class="font-bold block text-teal-dark">Correct Answer:</span>
+                        <span class="font-semibold text-teal-dark">${cleanOptionLabel(q.options[q.correct])}</span>
+                      </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200 space-y-2 text-xs text-gray-700">
+                      <div>
+                        <span class="font-extrabold text-teal uppercase block mb-0.5">WHY?</span>
+                        <p>${q.why}</p>
+                      </div>
+                      <div>
+                        <span class="font-extrabold text-teal uppercase block mb-0.5">WORKING:</span>
+                        <div class="bg-white p-2.5 rounded-xl border border-gray-200 font-mono text-center overflow-x-auto">
+                          ${q.working}
+                        </div>
+                      </div>
+                      <div>
+                        <span class="font-extrabold text-coral uppercase block mb-0.5">COMMON ERROR:</span>
+                        <p>${q.commonError}</p>
+                      </div>
+                      <div class="pt-2 border-t border-gray-200">
+                        <span class="font-extrabold text-amber-dark uppercase block mb-0.5">KEY TAKEAWAY:</span>
+                        <p>${q.keyTakeaway}</p>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // ----------------------------------------------------------------
+      // TEACHER DASHBOARD SECURITY & RENDERER
+      // ----------------------------------------------------------------
+      showTeacherAccessModal() {
+        if (this.teacherAuthenticated) {
+          this.navigateTo('teacher');
+          return;
+        }
+
+        const modalContainer = document.getElementById('modal-container');
+        const modalContent = document.getElementById('modal-content');
+
+        if (this.lockoutUntil && Date.now() < this.lockoutUntil) {
+          const remaining = Math.ceil((this.lockoutUntil - Date.now()) / 1000);
+          modalContent.innerHTML = `
+            <div class="space-y-5 text-center">
+              <div class="w-12 h-12 rounded-2xl bg-coral-light text-coral flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-user-lock"></i>
+              </div>
+              <h3 class="text-lg font-black text-gray-900">Access Temporarily Locked</h3>
+              <p class="text-xs text-gray-600 font-medium">Too many failed login attempts. Please wait <strong>${remaining} seconds</strong> before trying again.</p>
+              <button onclick="app.closeModal()" class="w-full py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs">
+                CLOSE
+              </button>
+            </div>
+          `;
+          modalContainer.classList.remove('hidden');
+          return;
+        }
+
+        modalContent.innerHTML = `
+          <div class="space-y-5">
+            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+              <h3 class="text-lg font-black text-gray-900 flex items-center gap-2">
+                <i class="fa-solid fa-lock text-teal"></i>
+                Teacher Access Required
+              </h3>
+              <button onclick="app.closeModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+              </button>
+            </div>
+
+            <form onsubmit="app.handleTeacherLogin(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Enter Access Code</label>
+                <input type="password" id="teacher-code-input" required class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-teal focus:border-teal text-sm" placeholder="Enter teacher access code">
+              </div>
+
+              <div id="teacher-error-msg" class="hidden p-3 rounded-xl bg-coral-light border border-coral/30 text-xs text-coral-dark font-bold flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation text-coral"></i>
+                <span id="teacher-error-text">Incorrect access code. Teacher access denied.</span>
+              </div>
+
+              <button type="submit" class="w-full py-3.5 rounded-xl bg-teal hover:bg-teal-dark text-white font-bold text-sm shadow-md">
+                VERIFY & ACCESS DASHBOARD
+              </button>
+            </form>
+          </div>
+        `;
+
+        modalContainer.classList.remove('hidden');
+      }
+
+      handleTeacherLogin(e) {
+        e.preventDefault();
+
+        if (this.lockoutUntil && Date.now() < this.lockoutUntil) {
+          this.showTeacherAccessModal();
+          return;
+        }
+
+        const codeInput = document.getElementById('teacher-code-input');
+        const code = codeInput ? codeInput.value : '';
+        const errorMsg = document.getElementById('teacher-error-msg');
+        const errorText = document.getElementById('teacher-error-text');
+        
+        // Exact case-sensitive access verification
+        if (code === "suhailabahrom") {
+          this.teacherAuthenticated = true;
+          this.loginAttempts = 0;
+          this.lockoutUntil = null;
+          this.closeModal();
+          this.navigateTo('teacher');
+        } else {
+          this.loginAttempts++;
+          if (this.loginAttempts >= 5) {
+            this.lockoutUntil = Date.now() + 60000;
+            this.loginAttempts = 0;
+            this.showTeacherAccessModal();
+          } else {
+            if (errorMsg) errorMsg.classList.remove('hidden');
+            if (errorText) errorText.textContent = `Incorrect access code. Teacher access denied. (${5 - this.loginAttempts} attempts left)`;
+            if (codeInput) {
+              codeInput.value = '';
+              codeInput.focus();
+            }
+          }
+        }
+      }
+
+      logoutTeacher() {
+        this.teacherAuthenticated = false;
+        this.teacherSectionFilter = 'ALL';
+        const modal = document.getElementById('modal-container');
+        if (modal) modal.classList.add('hidden');
+        this.navigateTo('landing');
+      }
+
+      renderTeacherDashboard() {
+        if (!this.teacherAuthenticated) {
+          setTimeout(() => this.showTeacherAccessModal(), 0);
+          return `<div class="p-8 text-center text-gray-500 font-semibold">Teacher Access Required. Access Denied.</div>`;
+        }
+
+        const rawFilter = this.teacherSectionFilter;
+        const normFilter = normaliseSection(rawFilter);
+        const isAll = rawFilter === 'ALL';
+
+        let filteredLeaderboard = this.leaderboardData || [];
+        if (!isAll) {
+          filteredLeaderboard = filteredLeaderboard.filter(d => normaliseSection(d.section) === normFilter);
+        }
+
+        let filteredAllRecords = this.allFirestoreRecords || [];
+        if (!isAll) {
+          filteredAllRecords = filteredAllRecords.filter(d => normaliseSection(d.section) === normFilter);
+        }
+
+        const count = filteredLeaderboard.length;
+        const meanScore = count > 0 ? (filteredLeaderboard.reduce((acc, d) => acc + d.score, 0) / count).toFixed(1) : '0.0';
+        const maxScore = count > 0 ? Math.max(...filteredLeaderboard.map(d => d.score)) : 0;
+        const avgTime = count > 0 ? Math.round(filteredLeaderboard.reduce((acc, d) => acc + (d.durationSeconds || 0), 0) / count) : 0;
+        const readyCount = filteredLeaderboard.filter(d => d.score >= 8).length;
+        const readyBandPct = count > 0 ? Math.round((readyCount / count) * 100) : 0;
+
+        return `
+          <div class="max-w-6xl mx-auto space-y-8 py-4">
+            <!-- Header Bar -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-4">
+              <div>
+                <h2 class="text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+                  <i class="fa-solid fa-chart-line text-teal"></i>
+                  TEACHER PERFORMANCE DASHBOARD
+                </h2>
+                <p class="text-xs text-gray-500 font-semibold mt-1">Real-time Class Analytics & Misconception Diagnostics</p>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-2.5">
+                <button onclick="app.navigateTo('landing')" class="px-3.5 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs border border-gray-300 transition-all flex items-center gap-1.5">
+                  <i class="fa-solid fa-house text-teal"></i>
+                  <span>HOME</span>
+                </button>
+
+                <select onchange="app.handleSectionFilterChange(this.value)" class="px-3 py-2 rounded-xl border border-gray-300 font-bold text-xs bg-white text-gray-700">
+                  <option value="ALL" ${rawFilter === 'ALL' ? 'selected' : ''}>All Sections</option>
+                  <option value="821" ${rawFilter === '821' ? 'selected' : ''}>Section 821</option>
+                  <option value="818" ${rawFilter === '818' ? 'selected' : ''}>Section 818</option>
+                  <option value="434" ${rawFilter === '434' ? 'selected' : ''}>Section 434</option>
+                  <option value="Others" ${rawFilter === 'Others' ? 'selected' : ''}>Others</option>
+                </select>
+
+                <button onclick="app.confirmClearLeaderboard()" class="px-3.5 py-2 rounded-xl bg-coral/10 hover:bg-coral text-coral hover:text-white font-bold text-xs border border-coral/30 transition-all flex items-center gap-1.5">
+                  <i class="fa-solid fa-trash"></i>
+                  <span>CLEAR LEADERBOARD</span>
+                </button>
+
+                <button onclick="app.logoutTeacher()" class="px-3.5 py-2 rounded-xl bg-gray-800 hover:bg-black text-white font-bold text-xs transition-all flex items-center gap-1.5">
+                  <i class="fa-solid fa-right-from-bracket"></i>
+                  <span>LOG OUT TEACHER</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+              <div class="glass-card p-4 rounded-2xl text-center space-y-1">
+                <div class="text-xs font-bold text-gray-500 uppercase">Participants</div>
+                <div class="text-2xl font-black text-gray-900">${count}</div>
+              </div>
+              <div class="glass-card p-4 rounded-2xl text-center space-y-1">
+                <div class="text-xs font-bold text-gray-500 uppercase">Mean Score</div>
+                <div class="text-2xl font-black text-teal">${meanScore} / 10</div>
+              </div>
+              <div class="glass-card p-4 rounded-2xl text-center space-y-1">
+                <div class="text-xs font-bold text-gray-500 uppercase">Highest Score</div>
+                <div class="text-2xl font-black text-amber-dark">${maxScore} / 10</div>
+              </div>
+              <div class="glass-card p-4 rounded-2xl text-center space-y-1">
+                <div class="text-xs font-bold text-gray-500 uppercase">Mean Duration</div>
+                <div class="text-2xl font-black text-gray-900">${this.formatDuration(avgTime)}</div>
+              </div>
+              <div class="glass-card p-4 rounded-2xl text-center space-y-1 col-span-2 sm:col-span-1">
+                <div class="text-xs font-bold text-gray-500 uppercase">Ready Band %</div>
+                <div class="text-2xl font-black text-teal">${readyBandPct}%</div>
+              </div>
+            </div>
+
+            <!-- SECTION 1: OFFICIAL STUDENT LEADERBOARD (BEST ATTEMPT) -->
+            <div class="bg-white rounded-3xl p-6 shadow-xl border border-gray-200 space-y-4">
+              <h3 class="text-xl font-black text-gray-900 tracking-tight flex items-center gap-2">
+                <i class="fa-solid fa-trophy text-amber"></i>
+                🏆 OFFICIAL STUDENT LEADERBOARD (BEST ATTEMPT)
+              </h3>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs font-medium text-gray-700">
+                  <thead class="bg-gray-50 text-gray-500 uppercase tracking-wider font-bold">
+                    <tr>
+                      <th class="p-3">Rank</th>
+                      <th class="p-3">Student Name</th>
+                      <th class="p-3">Section</th>
+                      <th class="p-3">Correct</th>
+                      <th class="p-3">Score</th>
+                      <th class="p-3">%</th>
+                      <th class="p-3">Time</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-100">
+                    ${filteredLeaderboard.length > 0 ? filteredLeaderboard.map((row, rIdx) => `
+                      <tr class="hover:bg-gray-50/80">
+                        <td class="p-3 font-bold">
+                          ${rIdx === 0 ? '🥇 1' : rIdx === 1 ? '🥈 2' : rIdx === 2 ? '🥉 3' : rIdx + 1}
+                        </td>
+                        <td class="p-3 font-bold text-gray-900">${row.studentName}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded bg-gray-100 font-bold">${row.section}</span></td>
+                        <td class="p-3">${row.score}/10</td>
+                        <td class="p-3 font-bold text-teal">${row.score}</td>
+                        <td class="p-3 font-bold">${row.percentage}%</td>
+                        <td class="p-3 font-mono">${this.formatDuration(row.durationSeconds || 0)}</td>
+                      </tr>
+                    `).join('') : `
+                      <tr>
+                        <td colspan="7" class="p-6 text-center text-gray-400 font-semibold">No student attempts recorded for this filter.</td>
+                      </tr>
+                    `}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- SECTION 2: ITEM MISCONCEPTION ANALYSIS -->
+            <div class="bg-white rounded-3xl p-6 shadow-xl border border-gray-200 space-y-4">
+              <h3 class="text-xl font-black text-gray-900 tracking-tight flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-coral"></i>
+                📊 ITEM MISCONCEPTION ANALYSIS (Q1–Q10)
+              </h3>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs font-medium text-gray-700">
+                  <thead class="bg-gray-50 text-gray-500 uppercase tracking-wider font-bold">
+                    <tr>
+                      <th class="p-3">Item</th>
+                      <th class="p-3">Concept Area</th>
+                      <th class="p-3">Correct</th>
+                      <th class="p-3">Incorrect</th>
+                      <th class="p-3">% Pass</th>
+                      <th class="p-3">Diagnostic Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-100">
+                    ${this.calculateItemAnalysis(filteredAllRecords).map((item, qI) => `
+                      <tr class="hover:bg-gray-50">
+                        <td class="p-3 font-bold">Q${qI + 1}</td>
+                        <td class="p-3 font-semibold">${item.topic}</td>
+                        <td class="p-3 font-bold text-teal">${item.correctCount}</td>
+                        <td class="p-3 font-bold text-coral">${item.incorrectCount}</td>
+                        <td class="p-3 font-black">${item.passPct}%</td>
+                        <td class="p-3">
+                          <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${item.badgeClass}">
+                            ${item.status}
+                          </span>
+                        </td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      calculateItemAnalysis(records) {
+        return QUESTION_BANK.map((q, idx) => {
+          let correctCount = 0;
+          let incorrectCount = 0;
+
+          records.forEach(attempt => {
+            if (attempt.questionResults && Array.isArray(attempt.questionResults) && attempt.questionResults[idx] !== undefined) {
+              if (attempt.questionResults[idx]) correctCount++;
+              else incorrectCount++;
+            } else if (attempt.score !== undefined) {
+              if (attempt.score >= idx + 1) correctCount++;
+              else incorrectCount++;
+            }
+          });
+
+          const total = correctCount + incorrectCount;
+          const passPct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+
+          let status = "PRIORITY MISCONCEPTION";
+          let badgeClass = "bg-coral-light text-coral-dark border border-coral/30";
+
+          if (passPct >= 80) {
+            status = "MASTERED";
+            badgeClass = "bg-teal-light text-teal border border-teal/30";
+          } else if (passPct >= 60) {
+            status = "DEVELOPING";
+            badgeClass = "bg-amber-light text-amber-dark border border-amber/30";
+          }
+
+          return { topic: q.topic, correctCount, incorrectCount, passPct, status, badgeClass };
+        });
+      }
+
+      handleSectionFilterChange(val) {
+        this.teacherSectionFilter = val;
+        this.render();
+      }
+
+      confirmClearLeaderboard() {
+        if (!this.teacherAuthenticated) {
+          this.showTeacherAccessModal();
+          return;
+        }
+
+        const modalContainer = document.getElementById('modal-container');
+        const modalContent = document.getElementById('modal-content');
+
+        modalContent.innerHTML = `
+          <div class="space-y-5">
+            <div class="w-12 h-12 rounded-2xl bg-coral-light text-coral flex items-center justify-center mx-auto text-xl">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <div class="text-center space-y-2">
+              <h3 class="text-lg font-black text-gray-900">Confirm Clear Leaderboard</h3>
+              <p class="text-xs text-gray-600 font-medium leading-relaxed">
+                Are you sure you want to permanently clear all Chapter 6 leaderboard records?
+              </p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 pt-2">
+              <button onclick="app.closeModal()" class="py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs transition-all">
+                CANCEL
+              </button>
+              <button onclick="app.executeClearLeaderboard()" class="py-3 rounded-xl bg-coral hover:bg-coral-dark text-white font-bold text-xs shadow-md shadow-coral/20 transition-all">
+                YES, CLEAR LEADERBOARD
+              </button>
+            </div>
+          </div>
+        `;
+
+        modalContainer.classList.remove('hidden');
+      }
+
+      async executeClearLeaderboard() {
+        this.closeModal();
+        if (!this.teacherAuthenticated) return;
+
+        await this.clearFirestoreLeaderboard();
+      }
+
+      // ----------------------------------------------------------------
+      // FIRESTORE CLOUD DATABASE ACTIONS
+      // ----------------------------------------------------------------
+      async saveResultToFirestore() {
+        const total = 10;
+        let score = 0;
+        const qResults = this.quizState.answers.map((ans, i) => {
+          const isCorrect = ans === QUESTION_BANK[i].correct;
+          if (isCorrect) score++;
+          return isCorrect;
+        });
+
+        const normName = normaliseStudentName(this.student.name || 'ANONYMOUS');
+        const normSec = normaliseSection(this.student.section || '821');
+
+        const record = {
+          studentName: (this.student.name || 'ANONYMOUS').trim().toUpperCase(),
+          studentNameNormalised: normName,
+          section: normSec,
+          score: score,
+          totalQuestions: total,
+          percentage: Math.round((score / total) * 100),
+          correctCount: score,
+          incorrectCount: total - score,
+          durationSeconds: this.quizState.elapsedSeconds,
+          answers: this.quizState.answers,
+          questionResults: qResults,
+          difficultyPerformance: ["Basic", "Intermediate", "Challenging"].reduce((acc, level) => {
+            const indices = QUESTION_BANK.map((q, i) => q.difficulty === level ? i : -1).filter(i => i !== -1);
+            const correct = indices.filter(i => this.quizState.answers[i] === QUESTION_BANK[i].correct).length;
+            acc[level.toLowerCase()] = {
+              correct,
+              total: indices.length,
+              percentage: indices.length ? Math.round((correct / indices.length) * 100) : 0
+            };
+            return acc;
+          }, {}),
+          completedAt: window.FirestoreOps && window.FirestoreOps.serverTimestamp ? window.FirestoreOps.serverTimestamp() : new Date().toISOString()
         };
-    </script>
+
+        if (window.FirebaseDB) {
+          try {
+            const { addDoc } = window.FirestoreOps;
+            const colRef = this.getCollectionRef();
+            const docRef = await addDoc(colRef, record);
+            console.log("Student saved successfully to chapter6Results:", docRef.id);
+          } catch (err) {
+            console.error("Firestore Save Error:", err);
+          }
+        }
+      }
+
+      subscribeRealtimeLeaderboard() {
+        if (!window.FirebaseDB) return;
+
+        // Create only ONE realtime Firestore listener.
+        if (this.unsubscribeLeaderboard) return;
+
+        const { onSnapshot } = window.FirestoreOps;
+        const colRef = this.getCollectionRef();
+        if (!colRef) return;
+
+        try {
+          this.unsubscribeLeaderboard = onSnapshot(colRef, (snapshot) => {
+            this.setCloudStatus('connected');
+
+            const records = [];
+            snapshot.forEach(doc => {
+              const data = doc.data() || {};
+              const rawName = data.studentName || data.name || 'ANONYMOUS';
+              const normName = data.studentNameNormalised || normaliseStudentName(rawName);
+              const section = normaliseSection(data.section || data.studentSection || '821');
+              const score = Number(data.score ?? data.correctCount ?? data.correct ?? 0);
+              const durationSeconds = Number(data.durationSeconds ?? data.duration ?? 0);
+              const totalQuestions = Number(data.totalQuestions || 10);
+              const percentage = Number(data.percentage ?? Math.round((score / totalQuestions) * 100));
+
+              records.push({
+                id: doc.id,
+                ...data,
+                studentName: String(rawName).trim().toUpperCase(),
+                studentNameNormalised: normName,
+                section: section,
+                score: score,
+                durationSeconds: durationSeconds,
+                totalQuestions: totalQuestions,
+                percentage: percentage
+              });
+            });
+
+            console.log("chapter6Results records loaded:", records);
+            this.allFirestoreRecords = records;
+            this.processLeaderboardData();
+
+            if (this.currentView === 'teacher') {
+              this.render();
+            }
+          }, (error) => {
+            console.error("Firestore onSnapshot failed:", error);
+            this.setCloudStatus('local');
+            this.unsubscribeLeaderboard = null;
+          });
+        } catch (err) {
+          console.error("Realtime subscription error:", err);
+          this.setCloudStatus('local');
+          this.unsubscribeLeaderboard = null;
+        }
+      }
+
+      processLeaderboardData() {
+        const bestMap = new Map();
+
+        (this.allFirestoreRecords || []).forEach(item => {
+          const key = `${item.studentNameNormalised}|${item.section}`;
+          if (!bestMap.has(key)) {
+            bestMap.set(key, item);
+          } else {
+            const existing = bestMap.get(key);
+            // Best attempt logic: higher score, or equal score with faster duration
+            if (item.score > existing.score || (item.score === existing.score && item.durationSeconds < existing.durationSeconds)) {
+              bestMap.set(key, item);
+            }
+          }
+        });
+
+        this.leaderboardData = Array.from(bestMap.values()).sort((a, b) => {
+          if (b.score !== a.score) return b.score - a.score;
+          return (a.durationSeconds || 0) - (b.durationSeconds || 0);
+        });
+      }
+
+      async clearFirestoreLeaderboard() {
+        if (!window.FirebaseDB) {
+          this.showNotificationModal("Cloud leaderboard could not be cleared. Please check Firestore permissions.", "error");
+          return;
+        }
+        
+        const { getDocs, deleteDoc } = window.FirestoreOps;
+        const colRef = this.getCollectionRef();
+
+        try {
+          const snapshot = await getDocs(colRef);
+          const deletePromises = snapshot.docs.map(d => deleteDoc(d.ref));
+          await Promise.all(deletePromises);
+          
+          this.allFirestoreRecords = [];
+          this.leaderboardData = [];
+          this.render();
+          this.showNotificationModal("Leaderboard cleared successfully.", "success");
+        } catch (err) {
+          console.error("Error clearing leaderboard:", err);
+          this.showNotificationModal("Cloud leaderboard could not be cleared. Please check Firestore permissions.", "error");
+        }
+      }
+
+      showNotificationModal(message, type = "info") {
+        const modalContainer = document.getElementById('modal-container');
+        const modalContent = document.getElementById('modal-content');
+
+        const icon = type === "success" 
+          ? '<div class="w-12 h-12 rounded-2xl bg-teal-light text-teal flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-circle-check"></i></div>'
+          : '<div class="w-12 h-12 rounded-2xl bg-coral-light text-coral flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-circle-exclamation"></i></div>';
+
+        modalContent.innerHTML = `
+          <div class="space-y-5 text-center">
+            ${icon}
+            <div class="text-sm font-bold text-gray-800">${message}</div>
+            <button onclick="app.closeModal()" class="w-full py-3 rounded-xl bg-teal text-white font-bold text-xs shadow-md">
+              OK
+            </button>
+          </div>
+        `;
+
+        modalContainer.classList.remove('hidden');
+      }
+    }
+
+    // Initialize application immediately after the DOM above has been parsed.
+    // This avoids waiting for optional external CDN/Firebase resources before the UI appears.
+    if (!window.app) {
+      window.app = new MatricesMastersApp();
+      window.app.init();
+    }
+  </script>
 </body>
+<!--
+==================================================
+FIRESTORE RULES TO PUBLISH (Firestore Database -> Rules)
+==================================================
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /chapter6Results/{document} {
+      allow read: if true;
+      allow create: if true;
+      allow delete: if true;
+      allow update: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+-->
 </html>
